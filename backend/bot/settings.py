@@ -35,12 +35,14 @@ INSTALLED_APPS = [
     
     # app
     'accounts',
+    'boards',
     'chatbot_app',
     # DRF
     'rest_framework',
     'rest_framework.authtoken',
     
     'dj_rest_auth',
+
     # The following apps are required:
 
     'allauth',
@@ -161,6 +163,9 @@ REST_FRAMEWORK = {
     ],
     # permission
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
+        # 'rest_framework.permissions.AllowAny',
+        
+        # 로그인 시에만 서비스를 이용할 수 있도록 변경
+        'rest_framework.permissions.IsAuthenticated',
     ],
 }
