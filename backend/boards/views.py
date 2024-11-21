@@ -1,6 +1,8 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
+#sideBoard를 띄우기 위한 generics
+from rest_framework import generics
 
 from django.shortcuts import render
 from django.http import JsonResponse
@@ -43,4 +45,24 @@ def board_detail(request, board_pk):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.erros, status=status.HTTP_400_BAD_REQUEST)
-    
+
+# sideBoard 띄우기
+# 1. 검색어에 해당하는 게시판 글을 가져오는 함수 구현
+# title이나 content에 keyword가 있는지 구별
+def get_boards_by_keyword(keyword):
+    return Board.objects.filter(title__icontains=keyword) | Board.objects.filter(content__icontains=keyword)
+
+# 2. 해당 게시판 글 보내주기
+@api_view(['GET'])
+def sideBoard(request):
+    if request.method == 'GET':
+        question = request.GET.get('question')
+        if question:
+            # 게시판 글 검색
+            boards = get_boards_by_keyword(question)
+            # 게시판 글을 JSON 형태로 응답
+            serializer = BoardSerializer(boards, many=True)
+
+            return JsonResponse({
+                'boards': serializer.data
+            })
