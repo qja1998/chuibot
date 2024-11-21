@@ -1,0 +1,27 @@
+version: "3.8"
+services:
+  postgres:
+    image: postgres:15
+    container_name: my_postgres_container
+    environment:
+      POSTGRES_DB: ssafyrag
+      POSTGRES_USER: ssafyuser
+      POSTGRES_PASSWORD: 1234
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+  dev:
+    image: python:3.10
+    container_name: dev_environment
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: tail -f /dev/null
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
