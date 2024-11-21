@@ -1,26 +1,49 @@
 <template>
+
   <nav class="navbar">
     <div class="logo">CHuiZZK</div>
     <ul class="nav-links">
-      <li>
-        <RouterLink to="/" class="nav-link">메인페이지</RouterLink>
-      </li>
-      <li>
-        <RouterLink to="/board" class="nav-link">게시판</RouterLink>
-      </li>
-      <li>
-        <RouterLink to="/signup" class="nav-link">회원가입</RouterLink>
-      </li>
-    </ul>
-    <button class="contact-button">Contact</button>
+
+        <div v-if="!isLoggedIn">
+          <li>
+            <RouterLink to="/login" class="nav-link">로그인</RouterLink>
+          </li>
+          <li>
+            <RouterLink to="/signup" class="nav-link">회원가입</RouterLink>
+          </li>
+        </div>
+
+        <div v-else>
+          <li>
+            <RouterLink to="/" class="nav-link">메인페이지</RouterLink>
+          </li>
+          <li>
+            <RouterLink to="/board" class="nav-link">게시판</RouterLink>
+          </li>
+        </div>
+
+      </ul>
+      <button class="contact-button">Contact</button>
   </nav>
 
-  <!-- RouterView 에 경로에 해당하는 컴포넌트 출력 -->
   <RouterView />
 </template>
 
 <script setup>
-// 추가적인 스크립트가 필요할 경우 여기서 작성
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+const isLoggedIn = ref(false); // 로그인 상태를 관리하는 ref
+
+const toLogin = function () {
+  const router = useRouter()
+  
+  if (!isLoggedIn) {
+    router.push('/')
+  }
+}
+
+// 여기에 로그인 상태를 변경하는 로직을 추가할 수 있습니다.
 </script>
 
 <style scoped>
@@ -36,7 +59,6 @@
   font-size: 24px;
   font-weight: bold;
   color: white; /* 로고 색상 */
-  position: absolute;
 }
 
 .nav-links {
