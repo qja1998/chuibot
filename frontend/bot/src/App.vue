@@ -21,6 +21,9 @@
         <li>
           <RouterLink to="/board" class="nav-link">게시판</RouterLink>
         </li>
+        <li>
+          <button @click="logout">로그아웃</button>
+        </li>
       </ul>
     </div>
   </nav>

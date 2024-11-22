@@ -49,5 +49,22 @@ export const useUserStore = defineStore('user', () => {
     }
   };
 
-  return { token, loginUsername, isLoggedIn, login, signUp };
+  const logout = async () => {
+    try {
+      await axios.post(`${API_URL}/dj-rest-auth/logout/`, {}, {
+        headers: {
+          Authorization: `Token ${token.value}`, // 현재 토큰을 헤더에 추가
+        },
+      });
+      // 로그아웃 성공 후 상태 초기화
+      token.value = null; 
+      loginUsername.value = ''; 
+      isLoggedIn.value = false; 
+      router.push('/login'); // 로그인 페이지로 리다이렉트
+    } catch (error) {
+      console.log("Logout error:", error);
+    }
+  };
+
+  return { token, loginUsername, isLoggedIn, login, signUp, logout };
 }, { persist: true });
