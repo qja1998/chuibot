@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.views import LoginView, LogoutView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -36,25 +36,32 @@ class CustomLogoutView(LogoutView):
 # 유저 정보 넘기기
 class UserDetailView(APIView):
     permission_classes = [IsAuthenticated]  # 인증된 사용자만 접근 가능
-
     def get(self, request):
         user = request.user  # 현재 인증된 사용자 가져오기
 
         # 사용자 정보를 직렬화
         serializer = UserSerializer(user)
+        print('t2', user)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 # signup 함수 custom으로 짜기
 class CustomSignupView(APIView):
+    permission_classes = [AllowAny]
     def post(self, request):
         # 요청 데이터에서 사용자 정보를 가져옵니다.
         serializer = UserSerializer(data=request.data)
-        
+        print('is_valid:', serializer.is_valid())
         if serializer.is_valid():
             # 유효한 데이터라면 사용자 객체 생성
             user = serializer.save()
             # 비밀번호는 set_password를 사용하여 해시화
             user.set_password(request.data.get('password'))  # 비밀번호 설정
+            user.username = request.data.get('username')
+            user.nickname = request.data.get('nickname')
+            user.industry = request.data.get('industry')
+            user.company = request.data.get('company')
+            user.domain = request.data.get('domain')
+            
             user.save()
             
             # 사용자 정보를 serialize하여 반환

@@ -24,5 +24,5 @@ urlpatterns = [
     path('api/v1/', include('boards.urls')),
     path('api/v1/', include('chatbot_app.urls')),
     
-    path('dj-rest-auth/', include('dj_rest_auth.urls')),
+    path('dj-rest-auth/', include('accounts.urls')),
 ]
