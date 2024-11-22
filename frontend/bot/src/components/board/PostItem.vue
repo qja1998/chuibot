@@ -25,10 +25,7 @@
       <button class="footer-btn">
         <span class="material-icons-outlined">chat_bubble_outline</span> Add Response
       </button>
-      <div class="responses">본문 -->
-    <p class="post-content">{{ post.content }}</p>
-
-    <!-
+      <div class="responses">
         <div v-for="i in post.responses" :key="i" class="response-avatar">
           <img :src="'https://via.placeholder.com/32/' + (50 + i * 10)" alt="User Avatar" />
         </div>
@@ -37,7 +34,6 @@
     </div>
   </div>
 </template>
-
 <script>
 export default {
   props: {

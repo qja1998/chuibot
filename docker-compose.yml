@@ -2,7 +2,8 @@ version: "3.8"
 services:
   postgres:
     image: postgres:15
-    container_name: my_postgres_container
+    container_name: postgres
+    working_dir: /app
     environment:
       POSTGRES_DB: ssafyrag
       POSTGRES_USER: ssafyuser
@@ -10,12 +11,12 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "5433:5433"
     restart: unless-stopped
 
-  dev:
-    image: python:3.10
-    container_name: dev_environment
+  vue:
+    image: ubuntu
+    container_name: vue
     working_dir: /app
     volumes:
       - .:/app
