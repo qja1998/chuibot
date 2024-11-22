@@ -1,62 +1,53 @@
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import { defineStore } from "pinia";
 import axios from "axios";
-
-// useRoute: 받을 때
-// useRouter: 보낼 때
-import { useRoute, useRouter } from "vue-router";
+import { useRouter } from "vue-router";
 
 export const useUserStore = defineStore('user', () => {
-  const API_URL = 'http://127.0.0.1:8000'
-  const router = useRouter()
+  const API_URL = 'http://127.0.0.1:8000';
+  const router = useRouter();
 
-  const token = ref(null)
-  const loginUsername = ref('')
+  const token = ref(null);
+  const loginUsername = ref('');
+  const isLoggedIn = ref(false); // 로그인 상태 관리 변수 추가
 
-  const login = function (payload) {
-    const { username, password } = payload
+  const login = async (payload) => {
+    const { username, password } = payload;
 
-    axios({
-      method: 'post',
-      url: `${API_URL}/dj-rest-auth/login/`,
-      data: {
+    try {
+      const response = await axios.post(`${API_URL}/dj-rest-auth/login/`, {
         username,
-        password
-      }
-    })
-    .then((response) => {
-      console.log('response:', response)
-      token.value = response.data.key
-      loginUsername.value = username
-      
-      router.push('/')
-    })
-    .catch((error) => {
-      console.log("error:", error)
-    })
-  }
+        password,
+      });
 
-  const signUp = function (payload) {
-    const { username, password1, password2 } = payload
+      console.log('response:', response);
+      token.value = response.data.key;
+      loginUsername.value = username;
+      isLoggedIn.value = true; // 로그인 성공 시 상태 업데이트
 
-    axios({
-      method: 'post',
-      url: `${API_URL}/dj-rest-auth/registration/`,
-      data: {
+      router.push('/');
+    } catch (error) {
+      console.log("error:", error);
+    }
+  };
+
+  const signUp = async (payload) => {
+    const { username, password1, password2 } = payload;
+
+    try {
+      const response = await axios.post(`${API_URL}/dj-rest-auth/registration/`, {
         username,
         password1,
-        password2
-      }
-    })
-    .then((response) => {
-      console.log('response:', response)
-      alert('회원가입 성공')
-      login({ username, password: password1})
-    })
-    .catch((error) => {
-      console.log("error:", error)
-    })
-  }
+        password2,
+      });
 
-  return { loginUsername, login, signUp }
-}, { persist: true })
+      console.log('response:', response);
+      alert('회원가입 성공');
+      await login({ username, password: password1 }); // 로그인 후 호출
+    } catch (error) {
+      console.log("error:", error);
+    }
+  };
+
+  return { token, loginUsername, isLoggedIn, login, signUp };
+}, { persist: true });

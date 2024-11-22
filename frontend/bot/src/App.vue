@@ -2,48 +2,51 @@
 
   <nav class="navbar">
     <div class="logo">CHuiZZK</div>
-    <ul class="nav-links">
-
-        <div v-if="!isLoggedIn">
-          <li>
-            <RouterLink to="/login" class="nav-link">로그인</RouterLink>
-          </li>
-          <li>
-            <RouterLink to="/signup" class="nav-link">회원가입</RouterLink>
-          </li>
-        </div>
-
-        <div v-else>
-          <li>
-            <RouterLink to="/" class="nav-link">메인페이지</RouterLink>
-          </li>
-          <li>
-            <RouterLink to="/board" class="nav-link">게시판</RouterLink>
-          </li>
-        </div>
-
+    <div v-if="!userStore.isLoggedIn">
+      <ul class="nav-links">
+        <li>
+          <RouterLink to="/login" class="nav-link">로그인</RouterLink>
+        </li>
+        <li>
+          <RouterLink to="/signup" class="nav-link">회원가입</RouterLink>
+        </li>
       </ul>
-      <button class="contact-button">Contact</button>
+    </div>
+
+    <div v-else>
+      <ul class="nav-links">
+        <li>
+          <RouterLink to="/" class="nav-link">메인페이지</RouterLink>
+        </li>
+        <li>
+          <RouterLink to="/board" class="nav-link">게시판</RouterLink>
+        </li>
+      </ul>
+    </div>
   </nav>
 
   <RouterView />
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { useUserStore } from './stores/user';
+import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
-const isLoggedIn = ref(false); // 로그인 상태를 관리하는 ref
+const userStore = useUserStore();
+const router = useRouter();
 
-const toLogin = function () {
-  const router = useRouter()
-  
-  if (!isLoggedIn) {
-    router.push('/')
+onMounted(() => {
+  if (!userStore.isLoggedIn) {
+    router.push('/login'); // 로그인하지 않았다면 /login으로 리다이렉트
   }
-}
+});
 
-// 여기에 로그인 상태를 변경하는 로직을 추가할 수 있습니다.
+const logout = () => {
+  userStore.logout(); // 로그아웃 처리
+  router.push('/login'); // 로그인 페이지로 리다이렉트
+};
+
 </script>
 
 <style scoped>
