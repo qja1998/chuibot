@@ -43,3 +43,22 @@ class UserDetailView(APIView):
         # 사용자 정보를 직렬화
         serializer = UserSerializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+# signup 함수 custom으로 짜기
+class CustomSignupView(APIView):
+    def post(self, request):
+        # 요청 데이터에서 사용자 정보를 가져옵니다.
+        serializer = UserSerializer(data=request.data)
+        
+        if serializer.is_valid():
+            # 유효한 데이터라면 사용자 객체 생성
+            user = serializer.save()
+            # 비밀번호는 set_password를 사용하여 해시화
+            user.set_password(request.data.get('password'))  # 비밀번호 설정
+            user.save()
+            
+            # 사용자 정보를 serialize하여 반환
+            response_serializer = UserSerializer(user)
+            return Response(response_serializer.data, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
