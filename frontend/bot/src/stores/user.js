@@ -15,11 +15,13 @@ export const useUserStore = defineStore('user', () => {
   const loginDomain = ref('');
   const isLoggedIn = ref(false); // 로그인 상태 관리 변수 추가
 
+  const payload = ref(null);
+
   const login = async (payload) => {
     const { username, password } = payload;
 
     try {
-      const response = await axios.post(`${API_URL}/dj-rest-auth/login/`, {
+      const response = await axios.post(`${API_URL}/dj-rest-auth/registration/login/`, {
         username,
         password,
       });
@@ -28,7 +30,7 @@ export const useUserStore = defineStore('user', () => {
       token.value = response.data.key;
       console.log(response.data.nickname)
       // user 정보 업데이트
-      fetchUserInfo(username);
+      fetchUserInfo(username, nickname, industry, company, domain);
 
       isLoggedIn.value = true; // 로그인 성공 시 상태 업데이트
 
@@ -39,22 +41,29 @@ export const useUserStore = defineStore('user', () => {
   };
 
   const signUp = async (payload) => {
-    const { username, password1, password2 } = payload;
+    const { username, password1, password2, nickname, industry, company, domain } = payload;
 
     try {
       const response = await axios.post(`${API_URL}/dj-rest-auth/registration/signup/`, {
         username: username,
         password1: password1,
         password2: password2,
-        nickname: "야호한상",
-        industry: "IT",
-        company: "삼성전자",
-        domain: "개발"
+        nickname: nickname,
+        industry: industry,
+        company: company,
+        domain: domain
       });
 
       console.log('response:', response);
       alert('회원가입 성공');
-      await login({ username, password: password1 }); // 로그인 후 호출
+      await login({
+        username,
+        password: password1,
+        nickname: nickname,
+        industry: industry,
+        company: company,
+        domain: domain
+      }); // 로그인 후 호출
     } catch (error) {
       console.log("error:", error);
     }
@@ -96,16 +105,17 @@ export const useUserStore = defineStore('user', () => {
     } catch (error) {
       console.log("Error fetching user info:", error);
     }
+    payload = computed(() => ({
+      username: loginUsername.value,
+      nickname: loginNickname.value,
+      industry: loginIndustry.value,
+      company: loginCompany.value,
+      domain: loginDomain.value
+    }));
   };
-
-
-  const payload = computed(() => ({
-    username: loginUsername.value,
-    nickname: loginNickname.value,
-    industry: loginIndustry.value,
-    company: loginCompany.value,
-    domain: loginDomain.value
-  }));
+  
+  
+  
 
   return { token, payload, isLoggedIn, login, signUp, logout };
 }, { persist: true });

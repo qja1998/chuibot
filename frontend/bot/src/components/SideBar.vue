@@ -5,9 +5,12 @@
       <h2 class="profile-name">{{ nickname }}</h2>
     </div>
     <h3 class="interest-title">요즘 당신의 관심사</h3>
+    <h4>산업: {{ industry }}</h4>
+    <h4>기업: {{ company }}</h4>
+    <h4>직무: {{ domain }}</h4>
     <div class="social-buttons">
       <button 
-        v-for="(platform, index) in socialPlatforms" 
+        v-for="(platform, index) in insterstingContent" 
         :key="index" 
         class="social-button">
         {{ platform }}
@@ -20,12 +23,17 @@
 import { ref } from 'vue';
 import { useUserStore } from '@/stores/user';
 
-const socialPlatforms = ref([
+const insterstingContent = ref([
   '삼성전자', 'LG전자'
 ]);
 
-const payload = useUserStore.payload
+const userStore = useUserStore()
+const payload = userStore.payload
+console.log('payload', payload)
 const nickname = payload.nickname
+const industry = payload.industry
+const company = payload.company
+const domain = payload.domain
 
 </script>
 
