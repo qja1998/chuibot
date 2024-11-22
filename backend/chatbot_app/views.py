@@ -3,15 +3,12 @@ from rest_framework import status
 from rest_framework.response import Response
 
 # 2차 수정
-from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from .models import ChatLog
 from .serializers import ChatLogSerializer
 
-#permission_classes([IsAuthenticated]) 추가 검토
 class ChatbotView(APIView):
-    def get(self, request):
-        question = request.GET.get('question', '')
+    def get(self, question):
 
         if not question:
             return Response({'error': '질문을 입력해야 합니다.'}, status=status.HTTP_400_BAD_REQUEST)
