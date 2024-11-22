@@ -57,7 +57,7 @@ def crawl_articles(query):
         try:
             response = urllib.request.urlopen(request)
         except:
-            
+            print(start)
             break
         rescode = response.getcode()
         if(rescode==200):
@@ -101,23 +101,7 @@ def crawl_articles(query):
     with open('./articles.json', 'w', encoding='utf-8') as file:
         json.dump(result, file, indent="\t", ensure_ascii=False)
     
-    return len(result)
+    return len(result["articles"])
 
 if __name__ == '__main__':
-    import os
-    import sys
-    import urllib.request
-    encText = urllib.parse.quote("삼성전자")
-    url = "https://openapi.naver.com/v1/search/news?query=" + encText # JSON 결과
-    # url = "https://openapi.naver.com/v1/search/blog.xml?query=" + encText # XML 결과
-    request = urllib.request.Request(url)
-    request.add_header("X-Naver-Client-Id",client_id)
-    request.add_header("X-Naver-Client-Secret",client_secret)
-    response = urllib.request.urlopen(request)
-    rescode = response.getcode()
-    if(rescode==200):
-        response_body = response.read()
-        print(response_body.decode('utf-8'))
-    else:
-        print("Error Code:" + rescode)
     print(crawl_articles('삼성전자'))
