@@ -6,6 +6,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
+from rest_framework.views import APIView
+from .models import User
+from .serializers import UserSerializer
+
 class CustomLoginView(LoginView):
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)  # 기본 LoginView 호출
@@ -29,4 +33,13 @@ class CustomLogoutView(LogoutView):
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
 
+# 유저 정보 넘기기
+class UserDetailView(APIView):
+    permission_classes = [IsAuthenticated]  # 인증된 사용자만 접근 가능
 
+    def get(self, request):
+        user = request.user  # 현재 인증된 사용자 가져오기
+
+        # 사용자 정보를 직렬화
+        serializer = UserSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
