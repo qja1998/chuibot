@@ -11,8 +11,11 @@ from .models import User
 from .serializers import UserSerializer
 
 class CustomLoginView(LoginView):
+    permission_classes = [AllowAny]
     def post(self, request, *args, **kwargs):
+        print(request)
         response = super().post(request, *args, **kwargs)  # 기본 LoginView 호출
+        
         if response.status_code == 200:
             # 로그인 성공 시
             token, created = Token.objects.get_or_create(user=self.request.user)  # 사용자에 대한 토큰 가져오기
