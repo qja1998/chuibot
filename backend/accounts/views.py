@@ -10,21 +10,54 @@ from rest_framework.views import APIView
 from .models import User
 from .serializers import UserSerializer
 
+
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from rest_framework.authtoken.models import Token
+from django.contrib.auth.views import LoginView
+from rest_framework import status
+from django.contrib.auth import authenticate
+
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+
+@method_decorator(csrf_exempt, name='dispatch')
 class CustomLoginView(LoginView):
     permission_classes = [AllowAny]
-    def post(self, request, *args, **kwargs):
-        print(request)
-        response = super().post(request, *args, **kwargs)  # 기본 LoginView 호출
-        
-        if response.status_code == 200:
+
+    def post(self, request):
+        username = request.data.get('username')
+        password = request.data.get('password')
+
+        # 사용자 인증
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
             # 로그인 성공 시
-            token, created = Token.objects.get_or_create(user=self.request.user)  # 사용자에 대한 토큰 가져오기
+            token, created = Token.objects.get_or_create(user=user)
             return Response({
-                'token': token.key,   # 토큰 반환
-                'user_id': self.request.user.id,   # 사용자 ID 반환
-                'username': self.request.user.username  # 사용자 이름 반환
+                'token': token.key,
+                'user_id': user.id,
+                'username': username
             }, status=status.HTTP_200_OK)
-        return response  # 로그인 실패 시 기본 응답 반환
+        
+        return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)  # 로그인 실패 시 기본 응답 반환
+
+# class CustomLoginView(LoginView):
+#     permission_classes = [AllowAny]
+#     def post(self, request, *args, **kwargs):
+#         print(request)
+#         response = super().post(request, *args, **kwargs)  # 기본 LoginView 호출
+        
+#         if response.status_code == 200:
+#             # 로그인 성공 시
+#             token, created = Token.objects.get_or_create(user=self.request.user)  # 사용자에 대한 토큰 가져오기
+#             return Response({
+#                 'token': token.key,   # 토큰 반환
+#                 'user_id': self.request.user.id,   # 사용자 ID 반환
+#                 'username': self.request.user.username  # 사용자 이름 반환
+#             }, status=status.HTTP_200_OK)
+#         return response  # 로그인 실패 시 기본 응답 반환
 
 class CustomLogoutView(LogoutView):
     # 인증된 사용자만 로그아웃 가능
