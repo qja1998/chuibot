@@ -1,7 +1,8 @@
 from django.shortcuts import render
 
 from rest_framework.authtoken.models import Token
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, LogoutView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -17,5 +18,15 @@ class CustomLoginView(LoginView):
                 'username': self.request.user.username  # 사용자 이름 반환
             }, status=status.HTTP_200_OK)
         return response  # 로그인 실패 시 기본 응답 반환
+
+class CustomLogoutView(LogoutView):
+    # 인증된 사용자만 로그아웃 가능
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
 
 
