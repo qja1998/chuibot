@@ -1,26 +1,55 @@
 <template>
+
   <nav class="navbar">
     <div class="logo">CHuiZZK</div>
-    <ul class="nav-links">
-      <li>
-        <RouterLink to="/" class="nav-link">메인페이지</RouterLink>
-      </li>
-      <li>
-        <RouterLink to="/board" class="nav-link">게시판</RouterLink>
-      </li>
-      <li>
-        <RouterLink to="/signup" class="nav-link">회원가입</RouterLink>
-      </li>
-    </ul>
-    <button class="contact-button">Contact</button>
+    <div v-if="!userStore.isLoggedIn">
+      <ul class="nav-links">
+        <li>
+          <RouterLink to="/login" class="nav-link">로그인</RouterLink>
+        </li>
+        <li>
+          <RouterLink to="/signup" class="nav-link">회원가입</RouterLink>
+        </li>
+      </ul>
+    </div>
+
+    <div v-else>
+      <ul class="nav-links">
+        <li>
+          <RouterLink to="/" class="nav-link">메인페이지</RouterLink>
+        </li>
+        <li>
+          <RouterLink to="/board" class="nav-link">게시판</RouterLink>
+        </li>
+        <li>
+          <button @click="logout">로그아웃</button>
+        </li>
+      </ul>
+    </div>
   </nav>
 
-  <!-- RouterView 에 경로에 해당하는 컴포넌트 출력 -->
   <RouterView />
 </template>
 
 <script setup>
-// 추가적인 스크립트가 필요할 경우 여기서 작성
+import { useUserStore } from './stores/user';
+import { onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+
+const userStore = useUserStore();
+const router = useRouter();
+
+onMounted(() => {
+  if (!userStore.isLoggedIn) {
+    router.push('/login'); // 로그인하지 않았다면 /login으로 리다이렉트
+  }
+});
+
+const logout = () => {
+  userStore.logout(); // 로그아웃 처리
+  router.push('/login'); // 로그인 페이지로 리다이렉트
+};
+
 </script>
 
 <style scoped>
@@ -36,7 +65,6 @@
   font-size: 24px;
   font-weight: bold;
   color: white; /* 로고 색상 */
-  position: absolute;
 }
 
 .nav-links {

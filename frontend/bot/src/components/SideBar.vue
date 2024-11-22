@@ -2,7 +2,7 @@
   <div class="sidebar">
     <div class="profile">
       <img class="profile-image" src="../assets/avatar.png" alt="Profile" />
-      <h2 class="profile-name">야호한상</h2>
+      <h2 class="profile-name">{{ nickname }}</h2>
     </div>
     <h3 class="interest-title">요즘 당신의 관심사</h3>
     <div class="social-buttons">
@@ -18,10 +18,15 @@
 
 <script setup>
 import { ref } from 'vue';
+import { useUserStore } from '@/stores/user';
 
 const socialPlatforms = ref([
   '삼성전자', 'LG전자'
 ]);
+
+const payload = useUserStore.payload
+const nickname = payload.nickname
+
 </script>
 
 <style scoped>

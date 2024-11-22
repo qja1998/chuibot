@@ -12,7 +12,10 @@
       </div>
     </div>
 
-    <!-- - 태그 -->
+    <!-- 본문 -->
+    <p class="post-content">{{ post.content }}</p>
+
+    <!-- 태그 -->
     <div class="post-tags">
       <span v-for="category in post.category" :key="category" class="tag">{{ category }}</span>
     </div>
@@ -25,10 +28,7 @@
       <button class="footer-btn">
         <span class="material-icons-outlined">chat_bubble_outline</span> Add Response
       </button>
-      <div class="responses">본문 -->
-    <p class="post-content">{{ post.content }}</p>
-
-    <!-
+      <div class="responses">
         <div v-for="i in post.responses" :key="i" class="response-avatar">
           <img :src="'https://via.placeholder.com/32/' + (50 + i * 10)" alt="User Avatar" />
         </div>
