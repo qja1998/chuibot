@@ -21,7 +21,7 @@ export const useUserStore = defineStore('user', () => {
     const { username, password } = payload;
 
     try {
-      const response = await axios.post(`${API_URL}/dj-rest-auth/registration/login/`, {
+      const response = await axios.post(`${API_URL}/dj-rest-auth/login/`, {
         username,
         password,
       });
@@ -44,7 +44,7 @@ export const useUserStore = defineStore('user', () => {
     const { username, password1, password2, nickname, industry, company, domain } = payload;
 
     try {
-      const response = await axios.post(`${API_URL}/dj-rest-auth/registration/signup/`, {
+      const response = await axios.post(`${API_URL}/dj-rest-auth/registration/`, {
         username: username,
         password1: password1,
         password2: password2,
@@ -88,7 +88,7 @@ export const useUserStore = defineStore('user', () => {
 
   const fetchUserInfo = async (username) => {
     try {
-      const response = await axios.get(`${API_URL}/dj-rest-auth/registration/user/`, { // 사용자 정보를 가져오는 API 엔드포인트
+      const response = await axios.get(`${API_URL}/dj-rest-auth/user/`, { // 사용자 정보를 가져오는 API 엔드포인트
         headers: {
           Authorization: `Token ${token.value}`, // 현재 토큰을 헤더에 추가
         },
