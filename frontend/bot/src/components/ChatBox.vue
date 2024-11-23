@@ -37,10 +37,13 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useUserStore } from '@/stores/user';
 
 const currentMessage = ref('')
 const messageLoading = ref(false)
 const messages = ref([])
+const API_URL = 'http://127.0.0.1:8000';
+const token = useUserStore.token
 
 async function submitMessage(newMessage) {
   if (!newMessage.trim()) return; // 빈 메시지 전송 방지
@@ -48,10 +51,13 @@ async function submitMessage(newMessage) {
   messageLoading.value = true;
 
   // 실제 chat이 들어갈 부분
-  /* await fetch('http://localhost:3000/chatbot', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: newMessage })
+  await fetch(`${API_URL}/api/v1/chat`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Token ${token}`
+          },
+          body: JSON.stringify({ question: newMessage })
       })
       .then(response => response.json())
       .then((response) => {
@@ -60,11 +66,11 @@ async function submitMessage(newMessage) {
               updateMessageStatus('success');
           }
           updateMessageStatus();
-      }); */
+      });
 
-  // test
-  addToMessageArray('chatGpt', 'hello');
-  updateMessageStatus('success')
+  // // test
+  // addToMessageArray('chatGpt', );
+  // updateMessageStatus('success')
   scrollToBottom();
 }
 

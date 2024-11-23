@@ -7,14 +7,39 @@ from rest_framework.views import APIView
 from .models import ChatLog
 from .serializers import ChatLogSerializer
 
-class ChatbotView(APIView):
-    def get(self, question):
+from .func.rag import rag
 
+doc_store, llm = rag.initialize()
+chat_history = []
+
+def generate_answer_and_source(question):
+    # 여기에 질문에 대한 답변과 출처를 생성하는 로직을 추가
+    # answer = '챗봇의 대답입니다.'
+    # source = ['뉴스 출처 1', '자소서 출처 2']
+
+    chat_history.append({"role": "user", "content": question})
+
+    results = rag.search_documents(doc_store, question)
+    stream_handler = rag.StreamHandler()
+    answer, source = rag.generate_answer(question, results, llm, stream_handler)
+    chat_history.append({"role": "assistant", "content": answer})
+
+    print('answer:', answer)
+    print('source:', source)
+    
+    return answer, source
+
+
+class ChatbotView(APIView):
+    def post(self, request):
+        question = request.data.get('question', None)
+        print(question)
+        print(self)
         if not question:
             return Response({'error': '질문을 입력해야 합니다.'}, status=status.HTTP_400_BAD_REQUEST)
 
         # 대답과 출처를 생성하는 로직
-        answer, source = self.generate_answer_and_source(question)
+        answer, source = generate_answer_and_source(question)
 
         # 대화 내용을 로그로 저장
         chat_log = ChatLog.objects.create(question=question, answer=answer)
@@ -24,13 +49,7 @@ class ChatbotView(APIView):
 
         return Response({'answer': answer, 'source': source, 'log': serializer.data})
 
-    def generate_answer_and_source(self, question):
-        # 여기에 질문에 대한 답변과 출처를 생성하는 로직을 추가
-        answer = '챗봇의 대답입니다.'
-        source = ['뉴스 출처 1', '자소서 출처 2']
-        
-        return answer, source
-
+    
 
 # 이 부분 추가 (1차 수정)
 # from rest_framework.views import APIView
