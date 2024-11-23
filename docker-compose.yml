@@ -9,13 +9,16 @@ services:
       POSTGRES_DB: ssafyrag
       POSTGRES_USER: ssafyuser
       POSTGRES_PASSWORD: 1234
+    working_dir: /home
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - .:/home/app
     ports:
       - "5432:5432"
     stdin_open: true
     tty: true
-    restart: unless-stopped
+    command: tail -f /dev/null
+    # restart: unless-stopped
 
   vue:
     build:

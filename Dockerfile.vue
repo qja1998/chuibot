@@ -1,5 +1,5 @@
 # 베이스 이미지 선택
-FROM kwon0528/vue_frontend:0.2
+FROM kwon0528/vue_frontend:0.3
 
 # 작업 디렉토리 설정
 WORKDIR /app
