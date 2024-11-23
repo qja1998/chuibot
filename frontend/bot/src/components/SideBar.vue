@@ -28,7 +28,7 @@ const insterstingContent = ref([
 ]);
 
 const userStore = useUserStore()
-const payload = userStore.payload
+const payload = userStore.userPayload
 console.log('payload', payload)
 const nickname = payload.nickname
 const industry = payload.industry

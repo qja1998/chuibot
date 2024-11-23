@@ -107,26 +107,35 @@ export const useUserStore = defineStore('user', () => {
   const fetchUserInfo = async (token) => {
     console.log('token(fetch)', token.value)
     try {
-      const response = await axios.get(`${API_URL}/auth/user/`, { // 사용자 정보를 가져오는 API 엔드포인트
+      const response = await axios.get(`${API_URL}/auth/user/`, {
         headers: {
-          Authorization: `Token ${token.value}`, // 현재 토큰을 헤더에 추가
+          Authorization: `Token ${token.value}`,
         },
       });
-
+  
       console.log('response:', response);
-
+  
       // 받은 정보를 저장
       loginUsername.value = response.data.username;
       loginNickname.value = response.data.nickname;
       loginIndustry.value = response.data.industry;
       loginCompany.value = response.data.company;
       loginDomain.value = response.data.domain;
+      
+      // userPayload를 새 객체로 업데이트
+      userPayload.value = {
+        username: loginUsername.value,
+        nickname: loginNickname.value,
+        industry: loginIndustry.value,
+        company: loginCompany.value,
+        domain: loginDomain.value
+      };
 
+      console.log(userPayload.data)
     } catch (error) {
       console.log("Error fetching user info:", error);
     }
-    
   };
-  
+
   return { token, userPayload, isLoggedIn, login, signUp, logout };
 }, { persist: true });
