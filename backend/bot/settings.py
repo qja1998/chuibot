@@ -69,13 +69,24 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+CORS_ALLOW_CREDENTIALS = True
+CSRF_COOKIE_HTTPONLY = False  # 클라이언트에서 접근 가능하도록 설정
+
+
 # CORS 설정
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5174",  # Vue.js 프론트엔드 주소 추가
     "http://127.0.0.1:5174",
     "http://localhost:5173",  # Vue.js 프론트엔드 주소 추가
     "http://127.0.0.1:5173"
-]\
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5174",  # Vue.js 프론트엔드 주소 추가
+    "http://127.0.0.1:5174",
+    "http://localhost:5173",  # Vue.js 프론트엔드 주소 추가
+    "http://127.0.0.1:5173"
+]
 
 CORS_ALLOW_HEADERS = [
     'content-type',

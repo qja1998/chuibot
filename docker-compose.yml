@@ -1,27 +1,38 @@
 version: "3.8"
 services:
   postgres:
-    image: postgres:15
-    container_name: my_postgres_container
+    build:
+      context: .
+      dockerfile: Dockerfile.postgres  # postgres용 Dockerfile
+    container_name: backend
     environment:
       POSTGRES_DB: ssafyrag
       POSTGRES_USER: ssafyuser
       POSTGRES_PASSWORD: 1234
+    working_dir: /home
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - .:/home/app
     ports:
       - "5432:5432"
-    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    command: tail -f /dev/null
+    # restart: unless-stopped
 
-  dev:
-    image: python:3.10
-    container_name: dev_environment
+  vue:
+    build:
+      context: .
+      dockerfile: Dockerfile.vue  # vue용 Dockerfile
+    container_name: frontend
+    network_mode: host
     working_dir: /app
     volumes:
-      - .:/app
-    command: tail -f /dev/null
-    depends_on:
-      - postgres
+      - .:/app  # 로컬 디렉토리를 컨테이너에 마운트
+    ports:
+      - "5174:5173"
+    stdin_open: true
+    tty: true
 
 volumes:
   postgres_data:

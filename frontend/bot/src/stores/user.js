@@ -16,14 +16,29 @@ export const useUserStore = defineStore('user', () => {
   const isLoggedIn = ref(false); // 로그인 상태 관리 변수 추가
 
   const payload = ref(null);
+  axios.defaults.withCredentials = true; // 쿠키 포함
+
+  const getCookie = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+  };
+  
 
   const login = async (payload) => {
     const { username, password } = payload;
 
+    const csrfToken = getCookie('csrftoken');
+    console.log(csrfToken)
+
     try {
-      const response = await axios.post(`${API_URL}/dj-rest-auth/registration/login/`, {
-        username,
-        password,
+      const response = await axios.post(`${API_URL}/dj-rest-auth/login/`, {
+        username: username,
+        password: password
+      }, {
+          headers: {
+              'X-CSRFToken': csrfToken // CSRF 토큰 추가
+          }
       });
 
       console.log('response:', response);
@@ -44,7 +59,7 @@ export const useUserStore = defineStore('user', () => {
     const { username, password1, password2, nickname, industry, company, domain } = payload;
 
     try {
-      const response = await axios.post(`${API_URL}/dj-rest-auth/registration/signup/`, {
+      const response = await axios.post(`${API_URL}/dj-rest-auth/registration/`, {
         username: username,
         password1: password1,
         password2: password2,
@@ -88,7 +103,7 @@ export const useUserStore = defineStore('user', () => {
 
   const fetchUserInfo = async (username) => {
     try {
-      const response = await axios.get(`${API_URL}/dj-rest-auth/registration/user/`, { // 사용자 정보를 가져오는 API 엔드포인트
+      const response = await axios.get(`${API_URL}/dj-rest-auth/user/`, { // 사용자 정보를 가져오는 API 엔드포인트
         headers: {
           Authorization: `Token ${token.value}`, // 현재 토큰을 헤더에 추가
         },

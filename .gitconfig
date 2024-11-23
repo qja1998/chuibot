@@ -1,0 +1,7 @@
+[credential "https://lab.ssafy.com"]
+	provider = generic
+[user]
+	email = qja1998@naver.com
+	name = kwon
+[credential]
+	helper = "!f() { /root/.vscode-server/bin/f1a4fb101478ce6ec82fe9627c43efbf9e98c813/node /tmp/vscode-remote-containers-7ebf8dee-6880-4244-a15c-e312232b9714.js git-credential-helper $*; }; f"
