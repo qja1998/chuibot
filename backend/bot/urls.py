@@ -16,13 +16,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from accounts.views import CustomSignupView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
     path('api/v1/', include('boards.urls')),
     path('api/v1/', include('chatbot_app.urls')),
+
+    path('auth/user/', include('accounts.urls')),
+    path('auth/', include('dj_rest_auth.urls')),
+    path('auth/registration/', include('dj_rest_auth.registration.urls')),
     
-    path('dj-rest-auth/', include('accounts.urls')),
 ]
