@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-ob5#i=ag(_4x&&d6v58g*d8nw_dy)lqw1uh9ua51=k!eiye3hi
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -71,9 +71,19 @@ MIDDLEWARE = [
 
 # CORS 설정
 CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5174",  # Vue.js 프론트엔드 주소 추가
+    "http://127.0.0.1:5174",
     "http://localhost:5173",  # Vue.js 프론트엔드 주소 추가
     "http://127.0.0.1:5173"
+]\
+
+CORS_ALLOW_HEADERS = [
+    'content-type',
+    'authorization',
+    # any other headers you may need
 ]
+
+CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = 'bot.urls'
 
@@ -102,9 +112,9 @@ WSGI_APPLICATION = 'bot.wsgi.application'
 DATABASES = {
   'default': {
       'ENGINE': 'django.db.backends.postgresql',
-      'NAME': 'backend',
-      'USER': 'postgres',
-      'PASSWORD' : '1234',
+      'NAME': 'ssafyrag',
+      'USER': 'ssafyuser',
+      'PASSWORD' : 'your_password',
       'HOST' : 'localhost',
       'PORT' :'5432',
   }
@@ -160,12 +170,13 @@ REST_FRAMEWORK = {
     # Authentication
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ],
     # permission
     'DEFAULT_PERMISSION_CLASSES': [
-        # 'rest_framework.permissions.AllowAny',
+        'rest_framework.permissions.AllowAny',
         
         # 로그인 시에만 서비스를 이용할 수 있도록 변경
-        'rest_framework.permissions.IsAuthenticated',
+        # 'rest_framework.permissions.IsAuthenticated',
     ],
 }
