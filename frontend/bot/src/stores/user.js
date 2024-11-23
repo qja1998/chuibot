@@ -16,14 +16,29 @@ export const useUserStore = defineStore('user', () => {
   const isLoggedIn = ref(false); // 로그인 상태 관리 변수 추가
 
   const payload = ref(null);
+  axios.defaults.withCredentials = true; // 쿠키 포함
+
+  const getCookie = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+  };
+  
 
   const login = async (payload) => {
     const { username, password } = payload;
 
+    const csrfToken = getCookie('csrftoken');
+    console.log(csrfToken)
+
     try {
       const response = await axios.post(`${API_URL}/dj-rest-auth/login/`, {
-        username,
-        password,
+        username: username,
+        password: password
+      }, {
+          headers: {
+              'X-CSRFToken': csrfToken // CSRF 토큰 추가
+          }
       });
 
       console.log('response:', response);

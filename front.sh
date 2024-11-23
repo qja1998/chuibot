@@ -1,2 +1,2 @@
-cd chuibot/frontend/bot
+cd frontend/bot
 npm run dev
