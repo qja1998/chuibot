@@ -38,14 +38,15 @@ export const useUserStore = defineStore('user', () => {
       });
 
       console.log('response:', response);
-      console.log('token:', response.data.key)
-      token.value = response.data.key
+      console.log('token:', response.data.key);
+      token.value = response.data.key;
+      console.log(token.value, response.data.key);
       const user = await axios.get(`${API_URL}/auth/user/`,{
         headers: {
           'Authorization': `Token ${response.data.key}`, // 토큰 추가
         },
-      })
-      console.log('user:', user, (await user).data)
+      });
+      console.log('user:', user, (await user).data);
 
       // user 정보 업데이트
       fetchUserInfo(token);
@@ -131,7 +132,7 @@ export const useUserStore = defineStore('user', () => {
         domain: loginDomain.value
       };
 
-      console.log(userPayload.data)
+      console.log(userPayload.value)
     } catch (error) {
       console.log("Error fetching user info:", error);
     }

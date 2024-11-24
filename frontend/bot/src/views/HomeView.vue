@@ -1,7 +1,18 @@
 <script setup>
+import { ref } from 'vue';
 import ChatBox from '@/components/ChatBox.vue'
 import SideBar from '@/components/SideBar.vue';
 import SideBoard from '@/components/SideBoard.vue';
+
+const news_sources = ref([]);
+const recruit_sources = ref([]);
+
+// 부모 컴포넌트가 update-sources 이벤트를 처리
+const updateSources = (sources) => {
+  news_sources.value = sources.news_sources;
+  recruit_sources.value = sources.recruit_sources;
+  console.log('home:', news_sources.value)
+};
 </script>
 
 <template>
@@ -10,10 +21,10 @@ import SideBoard from '@/components/SideBoard.vue';
       <SideBar/>
     </nav>
     <div class="chat-component">
-      <ChatBox/>
+      <ChatBox @update-sources="updateSources"/>
     </div>
     <nav class="side">
-      <SideBoard/>
+      <SideBoard :news_sources="news_sources" :recruit_sources="recruit_sources"/>
     </nav>
   </div>
 </template>

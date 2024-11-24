@@ -1,5 +1,5 @@
 # 베이스 이미지 선택
-FROM kwon0528/postgres_backend:0.4
+FROM kwon0528/postgres_backend:0.4.2
 
 # 필요한 패키지 설치 (bash 설치)
 RUN apt-get update && apt-get install -y bash

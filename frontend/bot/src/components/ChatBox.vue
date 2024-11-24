@@ -36,23 +36,47 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch  } from 'vue'
+import { defineEmits } from 'vue';
 import { useUserStore } from '@/stores/user';
 
 const currentMessage = ref('')
 const messageLoading = ref(false)
 const messages = ref([])
 const API_URL = 'http://127.0.0.1:8000';
-const token = useUserStore.token
+const userStore = useUserStore()
+const token = userStore.token
+const news_sources = ref([])
+const recruit_sources = ref([])
+
+// emit 정의
+const emit = defineEmits(['update-sources']);
+
+// 메타데이터를 부모에게 emit
+const updateSources = () => {
+  emit('update-sources', {
+    news_sources: news_sources.value,
+    recruit_sources: recruit_sources.value,
+  });
+};
+
+watch(news_sources, () => {
+  updateSources();
+}, { deep: true, immediate: true }); // 깊은 감시를 통해 배열의 변경을 감지
+
+watch(recruit_sources, () => {
+  updateSources();
+}, { deep: true, immediate: true }); // 깊은 감시를 통해 배열의 변경을 감지
+
 
 async function submitMessage(newMessage) {
   if (!newMessage.trim()) return; // 빈 메시지 전송 방지
   await addToMessageArray('user', newMessage);
   messageLoading.value = true;
-
+  console.log(token, userStore.token)
   // 실제 chat이 들어갈 부분
-  await fetch(`${API_URL}/api/v1/chat`, {
-          method: 'GET',
+  await fetch(`${API_URL}/api/v1/chat/`, {
+          method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Token ${token}`
@@ -62,16 +86,22 @@ async function submitMessage(newMessage) {
       .then(response => response.json())
       .then((response) => {
           if (response) {
-              addToMessageArray('chatGpt', response.data);
+              console.log('response:', response.source);
+              console.log('response:', response.source.value);
+              news_sources.value = response.source.news_src;
+              recruit_sources.value = response.source.recruit_src;
+              addToMessageArray('chatGpt', response.answer);
               updateMessageStatus('success');
           }
           updateMessageStatus();
+          scrollToBottom();
       });
-
+  
+  console.log('news_sources:', news_sources.value);
+  console.log('recruit_sources:', recruit_sources);
   // // test
   // addToMessageArray('chatGpt', );
   // updateMessageStatus('success')
-  scrollToBottom();
 }
 
 function addToMessageArray(from, data) {
@@ -94,7 +124,9 @@ function updateMessageStatus(status) {
   }
   messageLoading.value = false;
 }
+
 </script>
+
 
 <style scoped>
 .wrapper {

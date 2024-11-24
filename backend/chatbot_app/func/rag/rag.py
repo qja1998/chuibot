@@ -98,19 +98,19 @@ def generate_answer(query: str, relevant_docs: list, llm, stream_handler):
         recruit_sources = []
         context = "Context:\n"
     else:
-        company_qna, recruit_sources
+        company_qna, recruit_sources = company_qna
         context = f"QnA: {company_qna}\nContext:\n"
 
     context = "Context:\n"
     sources = []
     for i, doc in enumerate(relevant_docs, 1):
-        pprint(i, doc)
+        print(i, doc)
         sources.append(doc['metadata']['url'])
         context += f"{i}. {doc['title']}\n{doc['content']}\n"
 
     system_prompt = """
     당신은 모두를 합격시키는 취업 전문가입니다. 주어진 {context}와 QnA(합격자 자기소개서)를 분석하고 사용자에게 취업 컨설팅을 해주세요.
-    - 기업을 묻는 {question}에는 {context}에서 해당 기업에 대한 다양한 취업 관련 정보를 요약해 취업에 도움을 줄 수 있습니다.
+    - 기업을 묻는 {question}에는 {context}에서 기업에 대한 취업 관련 정보를 요약해 취업에 도움을 줄 수 있습니다.
     - 자기소개서 작성법을 묻는 {question}에는 QnA를 기반으로 취업한 사람들의 자기소개서를 분석하여 많이 나온 문항과 그 문항에 대한 답을 분석하여 요약해 제공합니다.
         - 만약 QnA가 주어지지 않았다면 기업명을 요구하세요.
         - 가끔은 당신이 중요할 것 같은 질문을 던질 수도 있습니다.
@@ -132,6 +132,8 @@ def generate_answer(query: str, relevant_docs: list, llm, stream_handler):
         messages,
         callbacks=[stream_handler]
     )
+    sources = list(set(sources))
+    recruit_sources = list(set(recruit_sources))
     return response.content, {'news_src': sources, 'recruit_src': recruit_sources}
     
     # except Exception as e:
