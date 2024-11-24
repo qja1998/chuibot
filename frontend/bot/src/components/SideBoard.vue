@@ -16,7 +16,7 @@
     </div>
     <div class="content">
       <div v-if="isContentA">
-        <ReferenceNews/>
+        <ReferenceNews :news_sources="props.news_sources" :recruit_sources="props.recruit_sources"/>
       </div>
       <div v-else>
         <ReferenceBoard/>
@@ -26,11 +26,13 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import ReferenceNews from './references/ReferenceNews.vue';
 import ReferenceBoard from './references/ReferenceBoard.vue';
 
 const isContentA = ref(true);
+const props = defineProps(['news_sources', 'recruit_sources']);
+console.log('sideboard:', props)
 </script>
 
 <style scoped>
