@@ -156,7 +156,7 @@ if __name__ == "__main__":
     # 뉴스 문서 저장소 초기화
     news_store = NewsDocumentStore.from_existing("news_documents")
     
-    merged_data_list = load_json_files_and_merge('.')[:3000]
+    merged_data_list = load_json_files_and_merge('../crawl')[:3000]
     print(len(merged_data_list))
     
     # # 100개 랜덤 샘플링

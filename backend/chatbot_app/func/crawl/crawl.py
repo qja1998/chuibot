@@ -76,6 +76,7 @@ def crawl_articles(query):
             content = item['description']
             
             if hash_id in article_id_list:
+                # print(hash_id)
                 continue
             
             article = {
@@ -84,13 +85,13 @@ def crawl_articles(query):
                 'title': title,
                 'content': content,
             }
-            id_list.append(hash_id)
+            article_id_list.append(hash_id)
             articles.append(article)
         
         result['articles'] += articles
     
-    with open('./article_id.txt', 'a', encoding='utf-8') as file:
-        for article_id in id_list:
+    with open('./article_id.txt', 'w', encoding='utf-8') as file:
+        for article_id in article_id_list:
             file.write(article_id+'\n')
     
     try:
@@ -106,4 +107,11 @@ def crawl_articles(query):
     return len(result["articles"])
 
 if __name__ == '__main__':
-    print(crawl_articles('삼성전자'))
+    company_list = ['삼성', '엘지', '현대그룹', '기업은행', '하나은행']
+    domain_list = ['IT', '프로그래머', '개발자', 'AI 개발자']
+    
+    for company in company_list:
+        for domain in domain_list:
+            query = company + ' ' + domain
+            print(query)
+            print(crawl_articles(query))

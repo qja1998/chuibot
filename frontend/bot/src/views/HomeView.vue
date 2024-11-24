@@ -13,15 +13,23 @@ const updateSources = (sources) => {
   recruit_sources.value = sources.recruit_sources;
   console.log('home:', news_sources.value)
 };
+
+const name = ref('');
+
+const handleSendMessage = (message) => {
+  console.log(message)
+  name.value = message;
+  // 추가적인 로직이 필요하다면 여기에 추가
+};
 </script>
 
 <template>
   <div class="chat-layout">
     <nav class="side">
-      <SideBar/>
+      <SideBar @send-message="handleSendMessage"/>
     </nav>
     <div class="chat-component">
-      <ChatBox @update-sources="updateSources"/>
+      <ChatBox @update-sources="updateSources" :messages="name"/>
     </div>
     <nav class="side">
       <SideBoard :news_sources="news_sources" :recruit_sources="recruit_sources"/>
