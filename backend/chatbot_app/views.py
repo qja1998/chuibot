@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import ChatLog
 from .serializers import ChatLogSerializer
+from rest_framework.permissions import IsAuthenticated
 
 from .func.rag import rag
 
@@ -31,15 +32,27 @@ def generate_answer_and_source(question):
 
 
 class ChatbotView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def post(self, request):
         question = request.data.get('question', None)
+        user = request.user
+
         print(question)
         print(self)
         if not question:
             return Response({'error': '질문을 입력해야 합니다.'}, status=status.HTTP_400_BAD_REQUEST)
 
+        industry = user.industry
+        company = user.company
+        domain = user.domain
+
+        print("user_info:", industry, company, domain)
+
         # 대답과 출처를 생성하는 로직
         answer, source = generate_answer_and_source(question)
+
+        question += f"사용자가 원하는 산업: {industry}, 사용자가 원하는 기업: {company}, 사용자가 원하는 직무: {domain}"
 
         # 대화 내용을 로그로 저장
         chat_log = ChatLog.objects.create(question=question, answer=answer)
