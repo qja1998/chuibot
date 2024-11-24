@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import User
+from .models import UserInterest, Company, JobRole
 from dj_rest_auth.serializers import UserDetailsSerializer
 from dj_rest_auth.registration.serializers import RegisterSerializer
 from rest_framework import serializers
@@ -35,3 +36,58 @@ class CustomRegisterSerializer(RegisterSerializer):
         user.domain = validated_data['domain']
         user.save()
         return user
+
+
+class CompanySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Company
+        fields = ['id', 'name']  # 필요한 필드 추가
+
+class JobRoleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = JobRole
+        fields = ['id', 'name']  # 필요한 필드 추가
+
+class UserInterestSerializer(serializers.ModelSerializer):
+    companies = CompanySerializer(many=True, read_only=True)
+    job_roles = JobRoleSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = UserInterest
+        fields = ['id', 'user', 'companies', 'job_roles']  # 필요한 필드 추가
+
+    def create(self, validated_data):
+        companies_data = validated_data.pop('companies', [])
+        job_roles_data = validated_data.pop('job_roles', [])
+        
+        user_interest = UserInterest.objects.create(**validated_data)
+
+        for company_data in companies_data:
+            company, _ = Company.objects.get_or_create(**company_data)
+            user_interest.companies.add(company)
+
+        for job_role_data in job_roles_data:
+            job_role, _ = JobRole.objects.get_or_create(**job_role_data)
+            user_interest.job_roles.add(job_role)
+
+        return user_interest
+
+    def update(self, instance, validated_data):
+        companies_data = validated_data.pop('companies', [])
+        job_roles_data = validated_data.pop('job_roles', [])
+
+        instance.user = validated_data.get('user', instance.user)
+        instance.save()
+
+        # 기존 관심 기업 및 직무 업데이트
+        instance.companies.clear()
+        for company_data in companies_data:
+            company, _ = Company.objects.get_or_create(**company_data)
+            instance.companies.add(company)
+
+        instance.job_roles.clear()
+        for job_role_data in job_roles_data:
+            job_role, _ = JobRole.objects.get_or_create(**job_role_data)
+            instance.job_roles.add(job_role)
+
+        return instance

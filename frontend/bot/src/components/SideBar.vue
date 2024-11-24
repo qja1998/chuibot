@@ -5,36 +5,46 @@
       <h2 class="profile-name">{{ nickname }}</h2>
     </div>
     <h3 class="interest-title">요즘 당신의 관심사</h3>
-    <h4>산업: {{ industry }}</h4>
+    <!-- <h4>산업: {{ industry }}</h4>
     <h4>기업: {{ company }}</h4>
-    <h4>직무: {{ domain }}</h4>
+    <h4>직무: {{ domain }}</h4> -->
     <div class="social-buttons">
       <button 
-        v-for="(platform, index) in insterstingContent" 
+        v-for="(company, index) in interest.companies.values" 
         :key="index" 
-        class="social-button">
-        {{ platform }}
+        class="companies-button"
+        @click="sendMessage(company.name)">
+        {{ company.name }}
+      </button>
+      <button 
+        v-for="(job_role, index) in interest.job_roles" 
+        :key="index" 
+        class="job_roles-button"
+        @click="sendMessage(job_role.name)">
+        {{ job_role.name }}
       </button>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { computed } from 'vue';
+import { defineEmits } from 'vue';
 import { useUserStore } from '@/stores/user';
 
-const insterstingContent = ref([
-  '삼성전자', 'LG전자'
-]);
+const emit = defineEmits(['send-message']);
+const userStore = useUserStore();
+const nickname = computed(() => userStore.userPayload.nickname);
+const industry = computed(() => userStore.userPayload.industry);
+const company = computed(() => userStore.userPayload.company);
+const domain = computed(() => userStore.userPayload.domain);
+const interest = computed(() => userStore.userPayload.interest);
 
-const userStore = useUserStore()
-const payload = userStore.userPayload
-console.log('payload', payload)
-const nickname = payload.nickname
-const industry = payload.industry
-const company = payload.company
-const domain = payload.domain
+console.log('interest (side bar):', interest.values)
 
+const sendMessage = (platform) => {
+  emit('send-message', platform);
+};
 </script>
 
 <style scoped>
@@ -73,7 +83,7 @@ const domain = payload.domain
   flex-wrap: wrap; /* 버튼들이 여러 줄로 배치되도록 */
 }
 
-.social-button {
+.companies-button {
   margin: 5px;
   padding: 8px 12px;
   border: none;
@@ -85,7 +95,23 @@ const domain = payload.domain
   transition: background-color 0.3s;
 }
 
-.social-button:hover {
+.companies-button:hover {
   background-color: #0056b3; /* 호버 시 색상 변화 */
+}
+
+.job_roles-button {
+  margin: 5px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  background-color: #00ffdd; /* 기본 배경 색상 */
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.job_roles-button:hover {
+  background-color: #00b374; /* 호버 시 색상 변화 */
 }
 </style>

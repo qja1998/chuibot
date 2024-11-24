@@ -15,12 +15,19 @@ export const useUserStore = defineStore('user', () => {
   const loginDomain = ref('');
   const isLoggedIn = ref(false); // 로그인 상태 관리 변수 추가
 
+  const loginInterestCompanies = ref([]);
+  const loginInterestJobRole = ref([]);
+
   const userPayload = ref({
     username: loginUsername.value,
     nickname: loginNickname.value,
     industry: loginIndustry.value,
     company: loginCompany.value,
-    domain: loginDomain.value
+    domain: loginDomain.value,
+    interest: {
+      companies: loginInterestCompanies.value,
+      job_roles: loginInterestJobRole.value
+    }
   });
   axios.defaults.withCredentials = true; // 쿠키 포함
 
@@ -54,6 +61,7 @@ export const useUserStore = defineStore('user', () => {
       isLoggedIn.value = true; // 로그인 성공 시 상태 업데이트
 
       router.push('/');
+
     } catch (error) {
       console.log("error:", error);
     }
@@ -105,7 +113,7 @@ export const useUserStore = defineStore('user', () => {
     }
   };
 
-  const fetchUserInfo = async (token) => {
+  const fetchUserInfo = async () => {
     console.log('token(fetch)', token.value)
     try {
       const response = await axios.get(`${API_URL}/auth/user/`, {
@@ -113,8 +121,16 @@ export const useUserStore = defineStore('user', () => {
           Authorization: `Token ${token.value}`,
         },
       });
+
+      // 관심사 가져오기
+      const interestResponse = await axios.get(`${API_URL}/auth/user/interest`, {
+        headers: {
+          Authorization: `Token ${token.value}`, // 현재 토큰을 헤더에 추가
+        },
+      });
   
-      console.log('response:', response);
+      console.log('response (strore):', response);
+      console.log('interest (strore):', interestResponse.data);
   
       // 받은 정보를 저장
       loginUsername.value = response.data.username;
@@ -122,6 +138,8 @@ export const useUserStore = defineStore('user', () => {
       loginIndustry.value = response.data.industry;
       loginCompany.value = response.data.company;
       loginDomain.value = response.data.domain;
+      loginInterestCompanies.value = interestResponse.data.companies
+      loginInterestJobRole.value = interestResponse.data.job_roles
       
       // userPayload를 새 객체로 업데이트
       userPayload.value = {
@@ -129,7 +147,11 @@ export const useUserStore = defineStore('user', () => {
         nickname: loginNickname.value,
         industry: loginIndustry.value,
         company: loginCompany.value,
-        domain: loginDomain.value
+        domain: loginDomain.value,
+        interest: {
+          companies: loginInterestCompanies.value,
+          job_roles: loginInterestJobRole.value
+        }
       };
 
       console.log(userPayload.value)
@@ -138,5 +160,5 @@ export const useUserStore = defineStore('user', () => {
     }
   };
 
-  return { token, userPayload, isLoggedIn, login, signUp, logout };
+  return { token, userPayload, isLoggedIn, login, signUp, logout, fetchUserInfo };
 }, { persist: true });

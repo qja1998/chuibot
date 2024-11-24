@@ -43,7 +43,23 @@ def search_documents(doc_store, query: str, k: int = 3):
 
 def extract_company(query: str, llm) -> str:
     """Extract company name from user input."""
-    system_prompt = "Extract the company name from the user's input."
+    system_prompt = "Extract the company name from the user's input. 오직 회사 이름만을 단어로 출력"
+
+    messages = [
+        SystemMessage(content=system_prompt),
+        HumanMessage(content=f"Input: {query}")
+    ]
+    
+    try:
+        response = llm.invoke(messages)
+        return response.content.strip()
+    except Exception as e:
+        print(f"Error during company name extraction: {str(e)}")
+        return "Error extracting company name."
+
+def extract_jobrole(query: str, llm) -> str:
+    """Extract company name from user input."""
+    system_prompt = "Extract the jobrole name from the user's input. 최소한의 단어로 명확하고 간결하게 job role word 만을 출력"
 
     messages = [
         SystemMessage(content=system_prompt),
@@ -90,6 +106,8 @@ def get_company_recruit(search_keyword):
 
 def generate_answer(query: str, relevant_docs: list, llm, stream_handler):
     """Generate answer using GPT model based on documents and user query."""
+    
+    jobrole_name = extract_jobrole(query, llm)
     company_name = extract_company(query, llm).replace(' ', '')
     print(f"Company name extracted: {company_name}")
     
@@ -146,7 +164,7 @@ def generate_answer(query: str, relevant_docs: list, llm, stream_handler):
     )
     sources = list(set(sources))
     recruit_sources = list(set(recruit_sources))
-    return response.content, {'news_src': sources, 'recruit_src': recruit_sources}
+    return response.content, {'news_src': sources, 'recruit_src': recruit_sources}, company_name, jobrole_name
     
     # except Exception as e:
     #     print(f"Error generating answer: {str(e)}")

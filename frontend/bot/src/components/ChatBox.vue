@@ -40,14 +40,16 @@ import { ref, watch  } from 'vue'
 import { defineEmits } from 'vue';
 import { useUserStore } from '@/stores/user';
 
-const currentMessage = ref('')
-const messageLoading = ref(false)
-const messages = ref([])
+const currentMessage = ref('');
+const messageLoading = ref(false);
 const API_URL = 'http://127.0.0.1:8000';
-const userStore = useUserStore()
-const token = userStore.token
-const news_sources = ref([])
-const recruit_sources = ref([])
+const userStore = useUserStore();
+const token = userStore.token;
+const news_sources = ref([]);
+const recruit_sources = ref([]);
+
+const props = defineProps(['messages']);
+const messages = ref([]); // 로컬 상태
 
 // emit 정의
 const emit = defineEmits(['update-sources']);
@@ -60,48 +62,74 @@ const updateSources = () => {
   });
 };
 
-watch(news_sources, () => {
-  updateSources();
-}, { deep: true, immediate: true }); // 깊은 감시를 통해 배열의 변경을 감지
+watch(
+  news_sources,
+  () => {
+    updateSources();
+  },
+  { deep: true, immediate: true }
+);
 
-watch(recruit_sources, () => {
-  updateSources();
-}, { deep: true, immediate: true }); // 깊은 감시를 통해 배열의 변경을 감지
+watch(
+  recruit_sources,
+  () => {
+    updateSources();
+  },
+  { deep: true, immediate: true }
+);
 
 
-async function submitMessage(newMessage) {
-  if (!newMessage.trim()) return; // 빈 메시지 전송 방지
-  await addToMessageArray('user', newMessage);
+// messages 업데이트 (props.messages 변경 시 동기화)
+const isProcessing = ref(false); // 메시지 처리 중인지 확인
+const isInitialized = ref(false); // 첫 실행 여부 확인
+
+watch(
+  () => props.messages,
+  (newMessages) => {
+    // 첫 실행 무시
+    if (!isInitialized.value) {
+      isInitialized.value = true;
+      return;
+    }
+
+    console.log(props.messages)
+    submitMessage(props.messages)
+  },
+  { deep: true, immediate: true } // 깊은 감시와 즉시 실행 활성화
+);
+
+
+
+
+async function submitMessage(message) {
+  console.log('message:', message)
+  if (!message.trim()) return; // 빈 메시지 전송 방지
+  await addToMessageArray('user', message);
   messageLoading.value = true;
-  console.log(token, userStore.token)
-  // 실제 chat이 들어갈 부분
-  await fetch(`${API_URL}/api/v1/chat/`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Token ${token}`
-          },
-          body: JSON.stringify({ question: newMessage })
-      })
-      .then(response => response.json())
-      .then((response) => {
-          if (response) {
-              console.log('response:', response.source);
-              console.log('response:', response.source.value);
-              news_sources.value = response.source.news_src;
-              recruit_sources.value = response.source.recruit_src;
-              addToMessageArray('chatGpt', response.answer);
-              updateMessageStatus('success');
-          }
-          updateMessageStatus();
-          scrollToBottom();
-      });
+
+  try {
+    const response = await fetch(`${API_URL}/api/v1/chat/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Token ${token}`
+      },
+      body: JSON.stringify({ question: message })
+    });
+
+    const data = await response.json();
+    if (data) {
+      news_sources.value = data.source.news_src;
+      recruit_sources.value = data.source.recruit_src;
+      await addToMessageArray('chatGpt', data.answer);
+      updateMessageStatus('success');
+    }
+  } catch (error) {
+    console.error('Error submitting message:', error);
+    messageLoading.value = false;
+  }
   
-  console.log('news_sources:', news_sources.value);
-  console.log('recruit_sources:', recruit_sources);
-  // // test
-  // addToMessageArray('chatGpt', );
-  // updateMessageStatus('success')
+  updateMessageStatus();
 }
 
 function addToMessageArray(from, data) {

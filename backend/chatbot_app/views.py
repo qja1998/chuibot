@@ -8,6 +8,9 @@ from .models import ChatLog
 from .serializers import ChatLogSerializer
 from rest_framework.permissions import IsAuthenticated
 
+from accounts.models import UserInterest, Company, JobRole
+from accounts.serializers import UserInterestSerializer
+
 from .func.rag import rag
 
 doc_store, llm = rag.initialize()
@@ -22,13 +25,13 @@ def generate_answer_and_source(question):
 
     results = rag.search_documents(doc_store, question)
     stream_handler = rag.StreamHandler()
-    answer, source = rag.generate_answer(question, results, llm, stream_handler)
+    answer, source, company_name, jobrole_name = rag.generate_answer(question, results, llm, stream_handler)
     chat_history.append({"role": "assistant", "content": answer})
 
     print('answer:', answer)
     print('source:', source)
     
-    return answer, source
+    return answer, source, company_name, jobrole_name
 
 
 class ChatbotView(APIView):
@@ -47,20 +50,34 @@ class ChatbotView(APIView):
         company = user.company
         domain = user.domain
 
+        # UserInterest에 company_name 추가
+        user_interest, created = UserInterest.objects.get_or_create(user=user)
+
         print("user_info:", industry, company, domain)
 
         # 대답과 출처를 생성하는 로직
-        answer, source = generate_answer_and_source(question)
+        answer, source, company_name, jobrole_name = generate_answer_and_source(question)
 
-        question += f"사용자가 원하는 산업: {industry}, 사용자가 원하는 기업: {company}, 사용자가 원하는 직무: {domain}"
-
+        question += f"사용자 희망 -산업: {industry}, -기업: {company}, -직무: {domain}"
+        question += f"사용자 관심 -기업: {user_interest.companies}, -직무: {user_interest.job_roles}"
         # 대화 내용을 로그로 저장
         chat_log = ChatLog.objects.create(question=question, answer=answer)
+
+
+        # 인스턴스를 가져오거나 생성
+        company_instance, _ = Company.objects.get_or_create(name=company_name)
+        jobrole_instance, _ = JobRole.objects.get_or_create(name=jobrole_name)
+        
+        # 관심 기업에 추가
+        user_interest.companies.add(company_instance)
+        user_interest.job_roles.add(jobrole_instance)
+
+        interest_serualizer = UserInterestSerializer(user_interest)
 
         # Serializer를 사용하여 응답 생성
         serializer = ChatLogSerializer(chat_log)
 
-        return Response({'answer': answer, 'source': source, 'log': serializer.data})
+        return Response({'answer': answer, 'source': source, 'log': serializer.data, 'interest': interest_serualizer.data})
 
     
 
