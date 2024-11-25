@@ -16,7 +16,7 @@ from .func.rag import rag
 doc_store, llm = rag.initialize()
 chat_history = []
 
-def generate_answer_and_source(question):
+def generate_answer_and_source(hope, question):
     # 여기에 질문에 대한 답변과 출처를 생성하는 로직을 추가
     # answer = '챗봇의 대답입니다.'
     # source = ['뉴스 출처 1', '자소서 출처 2']
@@ -25,13 +25,13 @@ def generate_answer_and_source(question):
 
     results = rag.search_documents(doc_store, question)
     stream_handler = rag.StreamHandler()
-    answer, source, company_name, jobrole_name = rag.generate_answer(question, results, llm, stream_handler)
+    answer, source, company_names, jobrole_names = rag.generate_answer(hope, question, results, llm, stream_handler)
     chat_history.append({"role": "assistant", "content": answer})
 
     print('answer:', answer)
     print('source:', source)
     
-    return answer, source, company_name, jobrole_name
+    return answer, source, company_names, jobrole_names
 
 
 class ChatbotView(APIView):
@@ -41,8 +41,6 @@ class ChatbotView(APIView):
         question = request.data.get('question', None)
         user = request.user
 
-        print(question)
-        print(self)
         if not question:
             return Response({'error': '질문을 입력해야 합니다.'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -50,34 +48,51 @@ class ChatbotView(APIView):
         company = user.company
         domain = user.domain
 
-        # UserInterest에 company_name 추가
         user_interest, created = UserInterest.objects.get_or_create(user=user)
 
-        print("user_info:", industry, company, domain)
-
         # 대답과 출처를 생성하는 로직
-        answer, source, company_name, jobrole_name = generate_answer_and_source(question)
+        company_names = [company.name for company in user_interest.companies.all()]
+        job_role_names = [job_role.name for job_role in user_interest.job_roles.all()]
+        
+        hope = f"""
+        사용자 희망 -산업: {industry}, -기업: {company}, -직무: {domain}
+        사용자 관심 -기업: {company_names}, -직무: {job_role_names}
+        """
+        
+        answer, source, company_names, jobrole_names = generate_answer_and_source(hope, question)
+        
+        # 인스턴스를 가져오거나 생성 및 빈도 업데이트
+        for company_name, jobrole_name in zip(company_names, jobrole_names):
+            
+            company_name, jobrole_name = company_name.strip(), jobrole_name.strip()
+            
+            company_instance, created_company = Company.objects.get_or_create(name=company_name)
+            jobrole_instance, created_jobrole = JobRole.objects.get_or_create(name=jobrole_name)
 
-        question += f"사용자 희망 -산업: {industry}, -기업: {company}, -직무: {domain}"
-        question += f"사용자 관심 -기업: {user_interest.companies}, -직무: {user_interest.job_roles}"
+            # 관심 기업에 추가 및 빈도 업데이트
+            if company_name and company_instance not in user_interest.companies.all():
+                user_interest.companies.add(company_instance)
+                company_instance.frequency = 1  # 새로 추가된 경우 빈도 1로 설정
+            else:
+                company_instance.frequency += 1  # 이미 존재하는 경우 빈도 증가
+
+            if jobrole_name and jobrole_instance not in user_interest.job_roles.all():
+                user_interest.job_roles.add(jobrole_instance)
+                jobrole_instance.frequency = 1  # 새로 추가된 경우 빈도 1로 설정
+            else:
+                jobrole_instance.frequency += 1  # 이미 존재하는 경우 빈도 증가
+
+            # 업데이트된 빈도를 저장
+            company_instance.save()
+            jobrole_instance.save()
+        
         # 대화 내용을 로그로 저장
         chat_log = ChatLog.objects.create(question=question, answer=answer)
 
-
-        # 인스턴스를 가져오거나 생성
-        company_instance, _ = Company.objects.get_or_create(name=company_name)
-        jobrole_instance, _ = JobRole.objects.get_or_create(name=jobrole_name)
-        
-        # 관심 기업에 추가
-        user_interest.companies.add(company_instance)
-        user_interest.job_roles.add(jobrole_instance)
-
-        interest_serualizer = UserInterestSerializer(user_interest)
-
-        # Serializer를 사용하여 응답 생성
+        interest_serializer = UserInterestSerializer(user_interest)
         serializer = ChatLogSerializer(chat_log)
 
-        return Response({'answer': answer, 'source': source, 'log': serializer.data, 'interest': interest_serualizer.data})
+        return Response({'answer': answer, 'source': source, 'log': serializer.data, 'interest': interest_serializer.data})
 
     
 

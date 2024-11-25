@@ -35,19 +35,24 @@ class CustomRegisterSerializer(RegisterSerializer):
         user.company = validated_data['company']
         user.domain = validated_data['domain']
         user.save()
+
+        # UserInterest 객체 생성
+        user_interest = UserInterest.objects.create(user=user)
+        print(f"Created UserInterest for {user.username}: {user_interest}")
+
         return user
 
 
 class CompanySerializer(serializers.ModelSerializer):
     class Meta:
         model = Company
-        fields = ['id', 'name']  # 필요한 필드 추가
+        fields = ['id', 'name', 'frequency']
 
 class JobRoleSerializer(serializers.ModelSerializer):
     class Meta:
         model = JobRole
-        fields = ['id', 'name']  # 필요한 필드 추가
-
+        fields = ['id', 'name', 'frequency']
+        
 class UserInterestSerializer(serializers.ModelSerializer):
     companies = CompanySerializer(many=True, read_only=True)
     job_roles = JobRoleSerializer(many=True, read_only=True)

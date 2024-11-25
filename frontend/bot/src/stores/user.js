@@ -56,7 +56,7 @@ export const useUserStore = defineStore('user', () => {
       console.log('user:', user, (await user).data);
 
       // user 정보 업데이트
-      fetchUserInfo(token);
+      fetchUserInfo();
 
       isLoggedIn.value = true; // 로그인 성공 시 상태 업데이트
 
