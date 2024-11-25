@@ -19,25 +19,36 @@ class BoardView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
+        print(request.data)
         company_names = request.data.get('companies', [])
         domain_names = request.data.get('domains', [])
+        print(company_names, domain_names)
 
         # 회사가 없으면 새로 생성
         companies = []
+        companies_id = []
         for company_name in company_names:
             # 회사가 존재하는지 확인
             company, created = Company.objects.get_or_create(name=company_name)
             companies.append(company)
+            companies_id.append(company.id)
         
         # 도메인이 없으면 새로 생성
         domains = []
+        domains_id = []
         for domain_name in domain_names:
             # 도메인이 존재하는지 확인
             domain, created = Domain.objects.get_or_create(name=domain_name)
             domains.append(domain)
+            domains_id.append(domain.id)
+
+
+        data = request.data.copy()
+        data['companies'] = companies_id
+        data['domains'] = domains_id
 
         # 사용자로부터 받은 입력을 포장
-        serializer = BoardListSerializer(data=request.data)
+        serializer = BoardListSerializer(data=data)
         
         # 포장된 데이터가 모두 정상적일 때(유효성 검증을 통과했을 때),
         if serializer.is_valid():
@@ -55,6 +66,7 @@ class BoardView(APIView):
         boards = BoardContent.objects.all().order_by('-pk')
         serializer = BoardListSerializer(boards, many=True)
         return Response(serializer.data)
+
 
 # 상세 게시글 조회, 삭제, 수정
 

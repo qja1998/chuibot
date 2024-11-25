@@ -1,41 +1,44 @@
 <template>
-  <div class="post-item">
-    <!-- 제목 -->
-    <h2 class="post-title">{{ post.title }}</h2>
-
-    <!-- 작성자 정보 -->
-    <div class="post-author">
-      <img :src="post.avatar" alt="Avatar" class="avatar" />
-      <div>
-        <p class="author-name">{{ post.author }}</p>
-        <p class="post-time">{{ post.time }}</p>
-      </div>
-    </div>
-
-    <!-- 본문 -->
-    <p class="post-content">{{ post.content }}</p>
-
-    <!-- 태그 -->
-    <div class="post-tags">
-      <span v-for="category in post.category" :key="category" class="tag">{{ category }}</span>
-    </div>
-
-    <!-- 하단 메뉴 -->
-    <div class="post-footer">
-      <button class="footer-btn">
-        <span class="material-icons-outlined">bookmark_border</span> Save
-      </button>
-      <button class="footer-btn">
-        <span class="material-icons-outlined">chat_bubble_outline</span> Add Response
-      </button>
-      <div class="responses">
-        <div v-for="i in post.responses" :key="i" class="response-avatar">
-          <img :src="'https://via.placeholder.com/32/' + (50 + i * 10)" alt="User Avatar" />
+  <router-link :to="{ name: 'post-detail', params: { id: post.id } }">
+    <p>{{post.id}}</p>
+    <div class="post-item">
+      <!-- 제목 -->
+      <h2 class="post-title">{{ post.title }}</h2>
+  
+      <!-- 작성자 정보 -->
+      <div class="post-author">
+        <img :src="post.avatar" alt="Avatar" class="avatar" />
+        <div>
+          <p class="author-name">{{ post.writer.name }}</p>
+          <p class="post-time">{{ post.created_at }}</p>
         </div>
-        <span class="response-count">+{{ post.responses }}</span>
+      </div>
+  
+      <!-- 본문 -->
+      <p class="post-content">{{ post.content }}</p>
+  
+      <!-- 태그 -->
+      <div class="post-tags">
+        <span v-for="category in [...post.companies, ...post.domains]" :key="category" class="tag">{{ category.name }}</span>
+      </div>
+  
+      <!-- 하단 메뉴 -->
+      <div class="post-footer">
+        <button class="footer-btn">
+          <span class="material-icons-outlined">bookmark_border</span> Save
+        </button>
+        <button class="footer-btn">
+          <span class="material-icons-outlined">chat_bubble_outline</span> Add Response
+        </button>
+        <div class="responses">
+          <div v-for="i in post.responses" :key="i" class="response-avatar">
+            <img :src="'https://via.placeholder.com/32/' + (50 + i * 10)" alt="User Avatar" />
+          </div>
+          <span class="response-count">+{{ post.responses }}</span>
+        </div>
       </div>
     </div>
-  </div>
+  </router-link>
 </template>
 
 <script>

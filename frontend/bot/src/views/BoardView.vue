@@ -1,22 +1,32 @@
 <template>
   <div class="board-container">
-    <!-- 배경 -->
     <div class="background-overlay"></div>
 
-    <!-- 콘텐츠 -->
     <div class="content-container">
-      <!-- 헤더 -->
       <header class="header">
         <h1 class="title">Community</h1>
-        <button class="add-thread-btn">
-          <span>Add a new thread</span>
-          <span class="add-icon">+</span>
-        </button>
+        <router-link to="/create-post">
+          <button class="add-thread-btn">
+            <span>Add a new thread</span>
+            <span class="add-icon">+</span>
+          </button>
+        </router-link>
       </header>
+
+      <!-- 검색 입력 필드 -->
+      <div class="search-container">
+        <input
+          type="text"
+          v-model="searchQuery"
+          placeholder="Search by title, content, or tags..."
+          class="search-input"
+          @input="filterPosts"
+        />
+      </div>
 
       <!-- 게시물 목록 -->
       <section class="post-list">
-        <div v-for="post in posts" :key="post.id" class="post-item">
+        <div v-for="post in filteredPosts" :key="post.id" class="post-item">
           <PostItem :post="post" />
         </div>
       </section>
@@ -24,56 +34,58 @@
   </div>
 </template>
 
+
 <script>
 import PostItem from '@/components/board/PostItem.vue';
 import { useUserStore } from '@/stores/user';
-
-const userStore = useUserStore()
+import axios from 'axios';
 
 const API_URL = 'http://127.0.0.1:8000';
 
-try {
-  const reponse = await axios.get(`${API_URL}/api/v1/board/`, {}, {
-    headers: {
-      Authorization: `Token ${userStore.token.value}`, // 현재 토큰을 헤더에 추가
-    },
-  });
-} catch (error) {
-  console.log("Logout error:", error);
-}
-
 export default {
+  setup() {
+    const store = useUserStore();
+    const token = store.token;
+
+    return { token };
+  },
   components: { PostItem },
   data() {
     return {
-      posts: [
-        {
-          id: 1,
-          title: 'Lecture Rescheduling',
-          author: 'Elisabeth May',
-          content:
-            'Hi mates, so I talked with Dr Hellen and because of her illness we need to reschedule upcoming Lecture...',
-          category: ['Accounting'],
-          time: '6h ago',
-          avatar: 'https://via.placeholder.com/48',
-          responses: 11,
-        },
-        {
-          id: 2,
-          title: 'Date of the final exams',
-          author: 'Dr Ronald Jackson',
-          content:
-            'Dear Students, after 6 months of our cooperation it is necessary to test your knowledge by the final exam...',
-          category: ['Accounting', 'Corporate law'],
-          time: '3d ago',
-          avatar: 'https://via.placeholder.com/48',
-          responses: 3,
-        },
-      ],
+      posts: [],
+      searchQuery: '',
+      filteredPosts: [],
     };
+  },
+  async mounted() {
+    try {
+      const response = await axios.get(`${API_URL}/api/v1/board/`, {
+        headers: {
+          Authorization: `Token ${this.token}`,
+        },
+      });
+      this.posts = response.data; // 응답 데이터를 posts에 할당
+      this.filteredPosts = this.posts; // 초기 필터링된 게시물 목록 설정
+    } catch (error) {
+      console.log("Logout error:", error);
+    }
+  },
+  methods: {
+    filterPosts() {
+      const query = this.searchQuery.toLowerCase();
+      this.filteredPosts = this.posts.filter(post => {
+        return (
+          post.title.toLowerCase().includes(query) ||
+          post.content.toLowerCase().includes(query) ||
+          (post.tags && post.tags.some(tag => tag.toLowerCase().includes(query)))
+        );
+      });
+    },
   },
 };
 </script>
+
+
 
 <style scoped>
 /* 전체 배경 */
@@ -162,5 +174,23 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 16px;
+}
+
+.search-container {
+  margin: 16px 0;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+.search-input:focus {
+  border-color: #4f46e5; /* 포커스 시 테두리 색상 */
+  outline: none; /* 기본 아웃라인 제거 */
 }
 </style>
