@@ -1,15 +1,28 @@
 from django.db import models
 from django.conf import settings
+from accounts.models import User
 
-User = settings.AUTH_USER_MODEL
+# 회사 모델
+class Company(models.Model):
+    name = models.CharField(max_length=200)
 
-# Model -> serializer -> url -> view -> test
+    def __str__(self):
+        return self.name
+
+# 도메인 모델
+class Domain(models.Model):
+    name = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.name
+
 # 게시글
-class Board(models.Model):
+class BoardContent(models.Model):
     title = models.CharField(max_length=200)
-    writer = models.ForeignKey(User, on_delete=models.CASCADE, related_name="boards")
+    writer = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()
-    company = models.CharField(max_length=200)
+    companies = models.ManyToManyField(Company)
+    domains = models.ManyToManyField(Domain)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -18,7 +31,8 @@ class Board(models.Model):
 
 # 댓글
 class Comment(models.Model):
-    board = models.ForeignKey(Board, on_delete=models.CASCADE)
-    content = models.CharField(max_length=200)
+    board = models.ForeignKey(BoardContent, on_delete=models.CASCADE)
+    writer = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
+    content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

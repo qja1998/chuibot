@@ -26,6 +26,21 @@
 
 <script>
 import PostItem from '@/components/board/PostItem.vue';
+import { useUserStore } from '@/stores/user';
+
+const userStore = useUserStore()
+
+const API_URL = 'http://127.0.0.1:8000';
+
+try {
+  const reponse = await axios.get(`${API_URL}/api/v1/board/`, {}, {
+    headers: {
+      Authorization: `Token ${userStore.token.value}`, // 현재 토큰을 헤더에 추가
+    },
+  });
+} catch (error) {
+  console.log("Logout error:", error);
+}
 
 export default {
   components: { PostItem },

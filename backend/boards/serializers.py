@@ -1,9 +1,9 @@
 from rest_framework import serializers
-from .models import Board, Comment
+from .models import BoardContent, Comment
 
 class BoardListSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Board
+        model = BoardContent
         exclude = ('created_at', 'updated_at',)
         read_only_fields = ('writer', )
 
@@ -12,18 +12,18 @@ class BoardSerializer(serializers.ModelSerializer):
     class CommentSerializer(serializers.ModelSerializer):
         class Meta:
             model = Comment
-            fields = ('id', 'content',)
+            fields = ('id', 'content', 'writer')
     
     class Meta:
-        model = Board
+        model = BoardContent
         fields = '__all__'
 
 # 댓글 조회 시 게시글 정보도 함께 조회
 class CommentSerializer(serializers.ModelSerializer):
     class BoardSerializer(serializers.ModelSerializer):
         class Meta:
-            model = Board
-            fields = fields = ('title', )
+            model = BoardContent
+            fields = ('title', 'content', 'writer')
     
     class Meta:
         model = Comment
