@@ -46,12 +46,19 @@ class BoardSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 # 댓글 조회 시 게시글 정보도 함께 조회
-class CommentSerializer(serializers.ModelSerializer):
-    class BoardSerializer(serializers.ModelSerializer):
-        class Meta:
-            model = BoardContent
-            fields = ('title', 'content', 'writer')
+# class CommentSerializer(serializers.ModelSerializer):
+#     class BoardSerializer(serializers.ModelSerializer):
+#         class Meta:
+#             model = BoardContent
+#             fields = ('title', 'content', 'writer')
     
+#     class Meta:
+#         model = Comment
+#         fields = '__all__'
+
+class CommentSerializer(serializers.ModelSerializer):
+    writer = UserSerializer(read_only=True)
+
     class Meta:
         model = Comment
-        fields = '__all__'
+        fields = ('id', 'content', 'writer', 'created_at')

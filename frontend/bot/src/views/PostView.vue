@@ -1,16 +1,27 @@
 <template>
-  <div class="post-detail-container" v-if="!loading">
-    <h1>{{ post.title }}</h1>
-    <div class="post-author">
-      <img :src="post.avatar" alt="Avatar" class="avatar" />
-      <div>
-        <p class="author-name">{{ post.writer.name }}</p>
-        <p class="post-time">{{ post.created_at }}</p>
+  <div v-if="!loading">
+    <div class="post-detail-container">
+      <h1>{{ post.title }}</h1>
+      <div class="post-author">
+        <img :src="post.avatar" alt="Avatar" class="avatar" />
+        <div>
+          <p class="author-name">{{ post.writer }}</p>
+          <p class="post-time">{{ post.created_at }}</p>
+        </div>
+      </div>
+      <p class="post-content">{{ post.content }}</p>
+      <div class="post-tags">
+        <span v-for="tag in [...post.companies, ...post.domains]" :key="tag" class="tag">{{ tag.name }}</span>
       </div>
     </div>
-    <p class="post-content">{{ post.content }}</p>
-    <div class="post-tags">
-      <span v-for="tag in [...post.companies, ...post.domains]" :key="tag" class="tag">{{ tag.name }}</span>
+    <div class="comments-section">
+      <h3>댓글</h3>
+      <div v-for="comment in comments" :key="comment.id" class="comment">
+        <p><strong>{{ comment.writer }}</strong>: {{ comment.content }}</p>
+      </div>
+
+      <textarea v-model="newComment" placeholder="댓글을 입력하세요"></textarea>
+      <button @click="addComment">댓글 추가</button>
     </div>
   </div>
   <div v-else>Loading...</div> <!-- 로딩 중일 때 메시지 -->
@@ -25,6 +36,15 @@ const API_URL = 'http://127.0.0.1:8000';
 
 export default {
   props: ['id'],
+  data() {
+    return {
+      comments: [],
+      newComment: '',
+    };
+  },
+  async mounted() {
+    await this.fetchComments();
+  },
   setup(props) {
     const store = useUserStore();
     const token = store.token;
@@ -51,8 +71,29 @@ export default {
 
     onMounted(fetchPost);
 
-    return { post, loading };
+    return { post, loading, token };
   },
+  methods: {
+    async fetchComments() {
+      const response = await axios.get(`${API_URL}/api/v1/board/${this.post.id}/comments/`, {
+          headers: {
+            Authorization: `Token ${this.token}`,
+          },
+        });
+      this.comments = response.data;
+    },
+    async addComment() {
+      const response = await axios.post(`${API_URL}/api/v1/board/${this.post.id}/comments/`, {
+        content: this.newComment,
+      }, {
+        headers: {
+          Authorization: `Token ${this.token}`,
+        },
+      });
+      this.comments.push(response.data);
+      this.newComment = ''; // 입력 필드 초기화
+    },
+  }
 };
 </script>
 

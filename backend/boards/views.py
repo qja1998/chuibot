@@ -8,7 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import render
 from django.http import JsonResponse
 
-from .serializers import BoardListSerializer, BoardSerializer
+from .serializers import BoardListSerializer, BoardSerializer, CommentSerializer
 from .models import BoardContent, Company, Domain
 
 # 게시글 생성(POST), 전체 게시글 조회(GET)
@@ -108,3 +108,26 @@ class SideBoardView(APIView):
             return JsonResponse({
                 'boards': serializer.data
             })
+        
+
+class CommentView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, board_pk):
+        board = BoardContent.objects.get(pk=board_pk)
+        data = request.data.copy()
+        data['board_content'] = board.pk
+        data['writer'] = request.user.pk
+
+        serializer = CommentSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request, board_pk):
+        board = BoardContent.objects.get(pk=board_pk)
+        comments = board.comments.all()
+        serializer = CommentSerializer(comments, many=True)
+        return Response(serializer.data)

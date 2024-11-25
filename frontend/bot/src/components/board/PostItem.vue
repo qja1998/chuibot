@@ -9,7 +9,7 @@
       <div class="post-author">
         <img :src="post.avatar" alt="Avatar" class="avatar" />
         <div>
-          <p class="author-name">{{ post.writer.name }}</p>
+          <p class="author-name">{{ post.writer.username }}</p>
           <p class="post-time">{{ post.created_at }}</p>
         </div>
       </div>

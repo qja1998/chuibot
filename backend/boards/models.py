@@ -31,8 +31,8 @@ class BoardContent(models.Model):
 
 # 댓글
 class Comment(models.Model):
-    board = models.ForeignKey(BoardContent, on_delete=models.CASCADE)
-    writer = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
+    board_content = models.ForeignKey(BoardContent, related_name='comments', on_delete=models.CASCADE)
+    writer = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
