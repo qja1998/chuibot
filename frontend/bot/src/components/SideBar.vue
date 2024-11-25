@@ -34,10 +34,10 @@ const interest = computed(() => userStore.userPayload.interest);
 
 // 관심사를 통합하여 단일 배열로 변환하고 병합
 const combinedInterests = computed(() => {
-  const companies = userStore.userPayload.interest.companies.map(company => ({
-    name: company.name,
-    frequency: company.frequency || 1 // 기본 빈도 1로 설정
-  }));
+  // const companies = userStore.userPayload.interest.companies.map(company => ({
+  //   name: company.name,
+  //   frequency: company.frequency || 1 // 기본 빈도 1로 설정
+  // }));
   
   const jobRoles = userStore.userPayload.interest.job_roles.map(jobRole => ({
     name: jobRole.name,
@@ -45,7 +45,7 @@ const combinedInterests = computed(() => {
   }));
 
   // 두 배열을 합치고 병합
-  const allInterests = [...companies, ...jobRoles];
+  const allInterests = [...jobRoles];
   
   return allInterests.reduce((acc, current) => {
     const existing = acc.find(item => item.name === current.name);

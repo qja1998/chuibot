@@ -41,9 +41,16 @@ def search_documents(doc_store, query: str, k: int = 3):
         print(f"Error during search: {str(e)}")
         return []
 
-def extract_company(query: str, llm) -> str:
+def extract_company(query: str) -> str:    
     """Extract company name from user input."""
-    system_prompt = "사용자 입력에서 회사 이름을 추출해서 오직 회사 이름만을 단어로 출력. 회사 이름이 없다면 아무 답도 하지 않을 것"
+
+    llm = ChatOpenAI(
+        model_name="gpt-4o-mini",
+        temperature=0.1,
+        streaming=True,
+    )
+
+    system_prompt = "사용자 입력에서 회사 이름을 추출해서 오직 회사 이름만을 ','로 구분하여 단어로 출력. 회사 이름이 없다면 아무 답도 하지 않을 것"
 
     messages = [
         SystemMessage(content=system_prompt),
@@ -52,14 +59,23 @@ def extract_company(query: str, llm) -> str:
     
     try:
         response = llm.invoke(messages)
+        print(response.content)
         return response.content.strip()
     except Exception as e:
         print(f"Error during company name extraction: {str(e)}")
         return "Error extracting company name."
 
-def extract_jobrole(query: str, llm) -> str:
+def extract_jobrole(query: str) -> str:
     """Extract company name from user input."""
-    system_prompt = "사용자 입력에서 취업 키워드(명사)를 추출해서 최소한의 단어로 명확하고 간결하게 키워드만을 출력. 취업과 관련된 명사가 없다면 아무 답도 하지 않을 것"
+
+    llm = ChatOpenAI(
+        model_name="gpt-4o-mini",
+        temperature=0.1,
+        streaming=True,
+    )
+
+
+    system_prompt = "사용자 입력에서 취업 키워드(명사)를 추출해서 최소한의 단어로 ','로 구분하여 명확하고 간결하게 키워드만을 출력. 취업과 관련된 키워드(명사)가 없다면 아무 답도 하지 않을 것"
 
     messages = [
         SystemMessage(content=system_prompt),
@@ -68,6 +84,7 @@ def extract_jobrole(query: str, llm) -> str:
     
     try:
         response = llm.invoke(messages)
+        print(response.content)
         return response.content.strip()
     except Exception as e:
         print(f"Error during company name extraction: {str(e)}")
@@ -107,9 +124,9 @@ def get_company_recruit(search_keyword):
 def generate_answer(hope:str, query: str, relevant_docs: list, llm, stream_handler):
     """Generate answer using GPT model based on documents and user query."""
     
-    jobrole_names = re.split("\n|,|.|/", extract_jobrole(query, llm).replace(' ', ''))
-    company_names = re.split("\n|,|.|/", extract_company(query, llm).replace(' ', ''))
-    print(f"Job role name extracted: {jobrole_names}")
+    keywords = extract_jobrole(query).split(', ')
+    company_names = extract_company(query).split(', ')
+    print(f"Keywords name extracted: {keywords}")
     print(f"Company name extracted: {company_names}")
     
     for company_name in company_names:
@@ -165,7 +182,7 @@ def generate_answer(hope:str, query: str, relevant_docs: list, llm, stream_handl
     )
     sources = list(set(sources))
     recruit_sources = list(set(recruit_sources))
-    return response.content, {'news_src': sources, 'recruit_src': recruit_sources}, company_names, jobrole_names
+    return response.content, {'news_src': sources, 'recruit_src': recruit_sources}, company_names, keywords
     
     # except Exception as e:
     #     print(f"Error generating answer: {str(e)}")
