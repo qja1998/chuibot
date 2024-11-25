@@ -16,12 +16,14 @@ class User(AbstractUser):
 # user 관심사 저장
 class Company(models.Model):
     name = models.CharField(max_length=100)
+    frequency = models.IntegerField(default=0)  # 빈도 필드 추가
 
     def __str__(self):
         return self.name
 
 class JobRole(models.Model):
     name = models.CharField(max_length=100)
+    frequency = models.IntegerField(default=0)  # 빈도 필드 추가
 
     def __str__(self):
         return self.name

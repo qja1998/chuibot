@@ -43,7 +43,7 @@ def search_documents(doc_store, query: str, k: int = 3):
 
 def extract_company(query: str, llm) -> str:
     """Extract company name from user input."""
-    system_prompt = "Extract the company name from the user's input. 오직 회사 이름만을 단어로 출력"
+    system_prompt = "사용자 입력에서 회사 이름을 추출해서 오직 회사 이름만을 단어로 출력. 회사 이름이 없다면 아무 답도 하지 않을 것"
 
     messages = [
         SystemMessage(content=system_prompt),
@@ -59,7 +59,7 @@ def extract_company(query: str, llm) -> str:
 
 def extract_jobrole(query: str, llm) -> str:
     """Extract company name from user input."""
-    system_prompt = "Extract the jobrole name from the user's input. 최소한의 단어로 명확하고 간결하게 job role word 만을 출력"
+    system_prompt = "사용자 입력에서 취업 키워드(명사)를 추출해서 최소한의 단어로 명확하고 간결하게 키워드만을 출력. 취업과 관련된 명사가 없다면 아무 답도 하지 않을 것"
 
     messages = [
         SystemMessage(content=system_prompt),
@@ -104,25 +104,26 @@ def get_company_recruit(search_keyword):
     
     return "\n".join(qna_texts), sources
 
-def generate_answer(query: str, relevant_docs: list, llm, stream_handler):
+def generate_answer(hope:str, query: str, relevant_docs: list, llm, stream_handler):
     """Generate answer using GPT model based on documents and user query."""
     
-    jobrole_name = extract_jobrole(query, llm)
-    company_name = extract_company(query, llm).replace(' ', '')
-    print(f"Company name extracted: {company_name}")
+    jobrole_names = re.split("\n|,|.|/", extract_jobrole(query, llm).replace(' ', ''))
+    company_names = re.split("\n|,|.|/", extract_company(query, llm).replace(' ', ''))
+    print(f"Job role name extracted: {jobrole_names}")
+    print(f"Company name extracted: {company_names}")
     
-    company_qna = get_company_recruit(company_name)
-    if company_qna is None:
-        recruit_sources = []
-        context = "Context:\n"
-    else:
-        company_qna, recruit_sources = company_qna
-        context = f"QnA: {company_qna}\nContext:\n"
+    for company_name in company_names:
+        company_qna = get_company_recruit(company_name)
+        if company_qna is None:
+            recruit_sources = []
+            context = "Context:\n"
+        else:
+            company_qna, recruit_sources = company_qna
+            context = f"QnA: {company_qna}\nContext:\n"
 
-    context = "Context:\n"
     sources = []
     for i, doc in enumerate(relevant_docs, 1):
-        print(i, doc)
+        print(f"{i}. {doc['title']}\n{doc['content'][:50]}\n")
         sources.append(doc['metadata']['url'])
         context += f"{i}. {doc['title']}\n{doc['content']}\n"
 
@@ -152,7 +153,7 @@ def generate_answer(query: str, relevant_docs: list, llm, stream_handler):
         HumanMessage(content=f"""
         다음 docs를 참고하여 제가 이 기업에 취업하는데 필요한 정보를 알려주세요.
         docs: {context}
-        
+        관심사: {hope}
         질문: {query}""")
     ]
     
@@ -164,7 +165,7 @@ def generate_answer(query: str, relevant_docs: list, llm, stream_handler):
     )
     sources = list(set(sources))
     recruit_sources = list(set(recruit_sources))
-    return response.content, {'news_src': sources, 'recruit_src': recruit_sources}, company_name, jobrole_name
+    return response.content, {'news_src': sources, 'recruit_src': recruit_sources}, company_names, jobrole_names
     
     # except Exception as e:
     #     print(f"Error generating answer: {str(e)}")

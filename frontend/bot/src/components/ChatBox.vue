@@ -123,6 +123,7 @@ async function submitMessage(message) {
       recruit_sources.value = data.source.recruit_src;
       await addToMessageArray('chatGpt', data.answer);
       updateMessageStatus('success');
+      await userStore.fetchUserInfo()
     }
   } catch (error) {
     console.error('Error submitting message:', error);

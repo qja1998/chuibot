@@ -53,12 +53,22 @@ const logout = () => {
 </script>
 
 <style scoped>
+@font-face {
+  font-family: 'main';
+  src: url("./assets/fonts/Jalnan2TTF.ttf");
+}
+@font-face {
+  font-family: 'maingothic';
+  src: url("./assets/fonts/JalnanGothicTTF.ttf");
+}
+
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: #2c2c2c; /* 배경 색상 */
   padding: 15px 30px; /* 패딩 */
+  font-family: 'main';
 }
 
 .logo {

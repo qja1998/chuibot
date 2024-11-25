@@ -14,7 +14,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - .:/home/app
     ports:
-      - "5432:5432"
+      - "5430:5433"
     stdin_open: true
     tty: true
     command: tail -f /dev/null
@@ -30,7 +30,7 @@ services:
     volumes:
       - .:/app  # 로컬 디렉토리를 컨테이너에 마운트
     ports:
-      - "5174:5173"
+      - "5173:5173"
     stdin_open: true
     tty: true
 

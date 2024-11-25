@@ -6,6 +6,8 @@ from rest_framework import generics
 
 from rest_framework.permissions import IsAuthenticated
 
+from rest_framework.exceptions import NotFound
+
 class CustomUserDetailsView(UserDetailsView):
     print('custom view')
     print(CustomUserSerializer)
@@ -17,5 +19,7 @@ class UserInterestView(generics.RetrieveAPIView):
     serializer_class = UserInterestSerializer
 
     def get_object(self):
-        # 현재 인증된 사용자의 관심사 객체를 가져옵니다.
-        return UserInterest.objects.get(user=self.request.user)
+        try:
+            return UserInterest.objects.get(user=self.request.user)
+        except UserInterest.DoesNotExist:
+            raise NotFound("UserInterest does not exist for this user.")
