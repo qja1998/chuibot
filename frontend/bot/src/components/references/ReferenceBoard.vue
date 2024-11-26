@@ -1,11 +1,9 @@
 <template>
   <div class="reference-container">
-    <h2>게시판</h2>
     <div v-for="post in filteredPosts" :key="post.id" class="reference-card">
       <h3 class="reference-title">{{ post.title }}</h3>
       <p class="reference-content">{{ post.content }}</p>
     </div>
-    <button class="more-button">더 보기</button>
   </div>
 </template>
 
@@ -90,19 +88,21 @@ export default {
 <style scoped>
 .reference-container {
   padding: 16px;
-  background-color: #f9f9f9;
   border-radius: 8px;
-  max-width: 600px;
   margin: auto;
+  overflow-y: auto;
 }
 
 .reference-card {
   background-color: white;
-  border: 1px solid #e0e0e0;
   border-radius: 8px;
   padding: 16px;
   margin-bottom: 16px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  box-shadow: -3px -2px 1px rgba(0, 0, 0, 0.2), 0px -2px 0px rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0); /* 투명 테두리 */
 }
 
 .reference-title {
@@ -113,7 +113,7 @@ export default {
 
 .reference-content {
   font-size: 14px;
-  color: #555;
+  color: #a7a7a7;
 }
 
 .more-button {
