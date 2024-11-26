@@ -37,12 +37,16 @@ console.log('sideboard:', props)
 
 <style scoped>
 .side-board {
-  padding: 10px;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px; /* 바깥쪽 둥글게 */
-  background-color: #f9f9f9;
-  display: flex;
-  flex-direction: column; /* 세로 방향으로 정렬 */
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0), 1px 2px 7px rgba(255, 255, 255, 0.3);
+  width: 100%;
+  height: 59vh;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0); /* 투명 테두리 */
+  font-family: 'main';
+  overflow-y: auto;
 }
 
 .toggle-buttons {
@@ -53,32 +57,44 @@ console.log('sideboard:', props)
 .toggle-button {
   flex: 1;
   padding: 10px;
-  border: 1px solid #007bff; /* 기본 테두리 색상 */
-  background-color: white; /* 기본 배경 색상 */
-  color: #007bff; /* 기본 글자 색상 */
+  color: white; /* 기본 글자 색상 */
   cursor: pointer;
-  font-weight: bold; /* 글자 두껍게 */
   text-align: center; /* 중앙 정렬 */
   transition: background-color 0.3s, color 0.3s; /* 부드러운 전환 효과 */
+
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  box-shadow: -3px -2px 1px rgba(0, 0, 0, 0.2), 0px -2px 0px rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0); /* 투명 테두리 */
 }
 
 .toggle-button.first {
+  font-family: 'main';
   border-top-left-radius: 8px; /* 왼쪽 둥글게 */
-  border-bottom-left-radius: 8px; /* 왼쪽 둥글게 */
+  /* border-bottom-left-radius: 8px; 왼쪽 둥글게 */
 }
 
 .toggle-button.last {
+  font-family: 'main';
   border-top-right-radius: 8px; /* 오른쪽 둥글게 */
-  border-bottom-right-radius: 8px; /* 오른쪽 둥글게 */
+  /* border-bottom-right-radius: 8px; 오른쪽 둥글게 */
 }
 
 .toggle-button.active {
-  background-color: #007bff; /* 선택된 버튼 배경 색상 */
+  background-color: rgba(1, 247, 160, 0); /* 선택된 버튼 배경 색상 */
   color: white; /* 선택된 버튼 글자 색상 */
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.4), -1px -1px 2px rgba(255, 255, 255, 0.5);
 }
 
 .content {
+  flex-grow: 1; /* 가능한 공간을 모두 차지하도록 설정 */
+  overflow-y: auto; /* 세로 스크롤 가능 */
   font-size: 14px;
-  color: #333;
+  color: #fffefe;
+  padding: 10px; /* 패딩 추가 */
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  box-shadow: -3px -2px 1px rgba(0, 0, 0, 0.2), 0px -2px 0px rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0); /* 투명 테두리 */
 }
 </style>

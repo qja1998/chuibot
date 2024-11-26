@@ -164,7 +164,8 @@ function updateMessageStatus(status) {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  height: 80vh;
+  height: 60vh;
+  font-family: 'main';
 }
 
 .heading,
@@ -194,8 +195,7 @@ function updateMessageStatus(status) {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 5px;
   backdrop-filter: blur(10px);
-  box-shadow: 0 2px 4px rgba(255, 255, 255, 0.5),
-            -4px -2px 6px rgba(0,0,0, 0.3); /* 굴절 효과 */
+  box-shadow: 0 2px 4px rgba(255, 255, 255, 0.3), -4px -2px 6px rgba(0,0,0, 0.2); /* 굴절 효과 */
   color: white;
   border: 1px solid rgba(255, 255, 255, 0); /* 투명 테두리 */
   font-family: 'main';
@@ -226,6 +226,8 @@ function updateMessageStatus(status) {
 .bot-message--content,
 .message-loading,
 .user-message--content {
+  padding-left: 10px;
+  font-size: medium;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 15px;
   backdrop-filter: blur(10px);
@@ -238,6 +240,8 @@ function updateMessageStatus(status) {
 }
 
 .bot-message--content {
+  padding-left: 10px;
+  font-size: medium;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 15px;
   backdrop-filter: blur(10px);
@@ -261,7 +265,7 @@ function updateMessageStatus(status) {
 }
 
 .messages {
-  margin-bottom: 5rem;
+  margin-bottom: auto;
   overflow-y: auto; /* 세로 스크롤 가능 */
   flex-grow: 1; /* 가능한 공간을 모두 차지하도록 설정 */
 }

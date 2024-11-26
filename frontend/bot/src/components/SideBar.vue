@@ -4,20 +4,22 @@
       <img class="profile-image" src="../assets/avatar.png" alt="Profile" />
       <h2 class="profile-name">{{ nickname }}</h2>
     </div>
-    <h3 class="interest-title">요즘 당신의 관심사</h3>
-    <div class="social-buttons">
-      <button 
-        v-for="(item, index) in combinedInterests" 
-        :key="index" 
-        v-if="combinedInterests.length > 0"
-        class="interest-button"
-        :style="{ 
-          backgroundColor: getButtonColor(item.frequency),
-          color: getTextColor(item.frequency) // 텍스트 색상 설정
-        }"
-        @click="sendMessage(item.name)">
-        {{ item.name }}
-      </button>
+    <div class="interest-container">
+      <h3 class="interest-title">요즘 당신의 관심사</h3>
+      <div class="social-buttons">
+        <button 
+          v-for="(item, index) in combinedInterests" 
+          :key="index" 
+          v-if="combinedInterests.length > 0"
+          class="interest-button"
+          :style="{ 
+            backgroundColor: getButtonColor(item.frequency),
+            color: getTextColor(item.frequency) // 텍스트 색상 설정
+          }"
+          @click="sendMessage(item.name)">
+          {{ item.name }}
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -85,22 +87,28 @@ const sendMessage = (platform) => {
 
 <style scoped>
 .sidebar {
-  padding: 20px;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  background-color: #ffffff;
-  font-family: 'maingothic';
-  backdrop-filter: blur(11px);
-  -webkit-backdrop-filter: blur(11px);
-  background-color: rgba(255, 255, 255, 0.5);
-  border-radius: 12px;
-  border: 1px solid rgba(209, 213, 219, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3), 1px 2px 7px rgba(255, 255, 255, 0.3);
+  width: 100%;
+  height: 25vh;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0); /* 투명 테두리 */
+  font-family: 'main';
 }
 
 .profile {
   display: flex;
   align-items: center;
-  margin-bottom: 20px;
+  margin: 20px;
+  padding: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3), 1px 2px 7px rgba(255, 255, 255, 0.3);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0);
 }
 
 .profile-image {
@@ -113,6 +121,11 @@ const sendMessage = (platform) => {
 .profile-name {
   font-size: 18px;
   font-weight: bold;
+}
+
+.interest-container {
+  font-family: 'main';
+  margin: 20px;
 }
 
 .interest-title {
@@ -133,7 +146,10 @@ const sendMessage = (platform) => {
   cursor: pointer;
   font-size: 14px;
   transition: background-color 0.3s;
-  font-family: 'main';
+  backdrop-filter: blur(10px);
+  box-shadow: 1px 4px 3px rgba(0, 0, 0, 0.2), 1px 1px 2px rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0);
 }
 
 .interest-button:hover {

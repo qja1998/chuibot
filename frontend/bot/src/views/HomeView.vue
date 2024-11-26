@@ -24,20 +24,27 @@ const handleSendMessage = (message) => {
 </script>
 
 <template>
-  <div class="chat-layout">
-    <nav class="side">
-      <SideBar @send-message="handleSendMessage"/>
-    </nav>
-    <div class="chat-component">
-      <ChatBox @update-sources="updateSources" :messages="name"/>
+  <div class="home-wrapper">
+    <div class="chat-layout">
+      <nav class="side">
+        <SideBar @send-message="handleSendMessage"/>
+      </nav>
+      <div class="chat-component">
+        <ChatBox @update-sources="updateSources" :messages="name"/>
+      </div>
+      <nav class="side">
+        <SideBoard :news_sources="news_sources" :recruit_sources="recruit_sources"/>
+      </nav>
     </div>
-    <nav class="side">
-      <SideBoard :news_sources="news_sources" :recruit_sources="recruit_sources"/>
-    </nav>
   </div>
 </template>
 
 <style scoped>
+
+.home-wrapper {
+  padding: 30px;
+}
+
 .chat-layout {
   display: flex; /* Flexbox 레이아웃 사용 */
   justify-content: space-between; /* 두 컴포넌트 사이에 공간을 균등하게 배치 */
@@ -50,9 +57,9 @@ const handleSendMessage = (message) => {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 15px;
   backdrop-filter: blur(10px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1),
-              0 0 10px rgba(255, 255, 255, 0.3); /* 굴절 효과 */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3), 1px 2px 7px rgba(255, 255, 255, 0.3);
   width: 30%;
+  height: 55vh;
   color: white;
   border: 1px solid rgba(255, 255, 255, 0); /* 투명 테두리 */
   margin-bottom: 40%; /* 카드가 위로 올라가도록 조정 */

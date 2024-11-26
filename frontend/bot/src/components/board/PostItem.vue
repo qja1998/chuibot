@@ -1,13 +1,12 @@
 <template>
-  <router-link :to="{ name: 'post-detail', params: { id: post.id } }">
-    <p>{{post.id}}</p>
+  <router-link :to="{ name: 'post-detail', params: { id: post.id } }" class="post-link">
     <div class="post-item">
       <!-- 제목 -->
       <h2 class="post-title">{{ post.title }}</h2>
   
       <!-- 작성자 정보 -->
       <div class="post-author">
-        <img :src="post.avatar" alt="Avatar" class="avatar" />
+        <img src="@/assets/avatar.png" alt="Avatar" class="avatar" />
         <div>
           <p class="author-name">{{ post.writer.username }}</p>
           <p class="post-time">{{ post.created_at }}</p>
@@ -22,7 +21,7 @@
         <span v-for="category in [...post.companies, ...post.domains]" :key="category" class="tag">{{ category.name }}</span>
       </div>
   
-      <!-- 하단 메뉴 -->
+      <!-- 하단 메뉴
       <div class="post-footer">
         <button class="footer-btn">
           <span class="material-icons-outlined">bookmark_border</span> Save
@@ -36,7 +35,7 @@
           </div>
           <span class="response-count">+{{ post.responses }}</span>
         </div>
-      </div>
+      </div> -->
     </div>
   </router-link>
 </template>
@@ -52,22 +51,31 @@ export default {
 <style scoped>
 /* 게시물 카드 스타일 */
 .post-item {
-  background-color: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: box-shadow 0.3s;
+  padding-left: 10px;
+  font-size: medium;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0px 7px 7px rgba(0, 0, 0, 0.1),
+              1px 2px 5px rgba(255, 255, 255, 0.3);
+  width: 85%;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0); /* 투명 테두리 */
+  margin: 20px 6px 20px 20px;
 }
 
 .post-item:hover {
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
 }
 
+.post-link {
+  text-decoration: none;
+}
+
 .post-title {
   font-size: 18px;
   font-weight: bold;
   margin-bottom: 12px;
-  color: #1f2937;
 }
 
 .post-author {
@@ -86,17 +94,15 @@ export default {
 .author-name {
   font-size: 14px;
   font-weight: bold;
-  color: #4b5563;
 }
 
 .post-time {
+  color: #a7a7a7;
   font-size: 12px;
-  color: #6b7280;
 }
 
 .post-content {
   font-size: 14px;
-  color: #374151;
   margin-bottom: 16px;
 }
 

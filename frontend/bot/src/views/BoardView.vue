@@ -4,10 +4,9 @@
 
     <div class="content-container">
       <header class="header">
-        <h1 class="title">Community</h1>
+        <h1 class="title">게시판</h1>
         <router-link to="/create-post">
           <button class="add-thread-btn">
-            <span>Add a new thread</span>
             <span class="add-icon">+</span>
           </button>
         </router-link>
@@ -91,34 +90,27 @@ export default {
 /* 전체 배경 */
 .board-container {
   position: relative;
-  width: 100%;
+  
   min-height: 100vh;
   font-family: 'Arial', sans-serif;
   overflow: hidden;
 }
 
-/* 배경 그라데이션 */
-.background-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, #f5f7fa, #dfe7f5, #f8f9fc);
-  z-index: 1;
-}
 
 /* 메인 콘텐츠 컨테이너 */
 .content-container {
-  position: relative;
-  z-index: 2;
-  margin: 32px auto;
-  padding: 24px;
-  max-width: 800px;
-  background: rgba(255, 255, 255, 0.7); /* 반투명 흰색 */
-  backdrop-filter: blur(12px); /* 블러 효과 */
-  border-radius: 16px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  font-size: medium;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0px 7px 7px rgba(0, 0, 0, 0.1),
+              1px 2px 5px rgba(255, 255, 255, 0.3);
+  
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0); /* 투명 테두리 */
+  margin: 20px 6px 20px 20px;
+  font-family: 'main';
 }
 
 /* 헤더 스타일 */
@@ -127,46 +119,60 @@ export default {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 24px;
+  font-family: 'main';
 }
 
 .title {
+  margin: 20px;
   font-size: 28px;
   font-weight: bold;
-  color: #374151;
+  color: white;
+  font-family: 'main';
 }
 
 .add-thread-btn {
   display: flex;
   align-items: center;
-  background-color: #4f46e5;
+  padding-left: 10px;
+  font-size: medium;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0px 7px 7px rgba(0, 0, 0, 0.1),
+              1px 2px 5px rgba(255, 255, 255, 0.3);
+  
   color: white;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 50px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-  box-shadow: 0 4px 6px rgba(79, 70, 229, 0.3);
-  transition: background-color 0.3s, box-shadow 0.3s;
+  border: 1px solid rgba(255, 255, 255, 0); /* 투명 테두리 */
+  margin: 20px 6px 20px 20px;
+  font-family: 'main';
 }
 
 .add-thread-btn:hover {
-  background-color: #4338ca;
-  box-shadow: 0 6px 8px rgba(67, 56, 202, 0.4);
+  font-size: medium;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0px 7px 7px rgba(0, 0, 0, 0.1),
+              1px 2px 5px rgba(255, 255, 255, 0.3);
+  
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0); /* 투명 테두리 */
+  margin: 20px 6px 20px 20px;
+  font-family: 'main';
 }
 
 .add-icon {
+  width: 15px;
+  height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: white;
-  color: #4f46e5;
+  color: white;
   border-radius: 50%;
-  width: 24px;
-  height: 24px;
-  margin-left: 10px;
   font-size: 16px;
   font-weight: bold;
+  font-family: 'main';
+  text-decoration: none;
 }
 
 /* 게시물 목록 */
@@ -174,23 +180,31 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  font-family: 'main';
 }
 
 .search-container {
-  margin: 16px 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0px 7px 7px rgba(0, 0, 0, 0.1),
+              1px 2px 5px rgba(255, 255, 255, 0.3);
+  width: 87%;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0); /* 투명 테두리 */
+  margin: 20px 6px 20px 20px;
+  font-family: 'main';
 }
 
 .search-input {
   width: 100%;
+  background: rgba(0, 0, 0, 0);
   padding: 10px;
-  border: 1px solid #ddd;
+  border: 0px solid #ddd;
   border-radius: 5px;
   font-size: 16px;
   transition: border-color 0.3s;
+  font-family: 'main';
 }
 
-.search-input:focus {
-  border-color: #4f46e5; /* 포커스 시 테두리 색상 */
-  outline: none; /* 기본 아웃라인 제거 */
-}
 </style>

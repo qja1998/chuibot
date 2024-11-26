@@ -22,7 +22,7 @@
             <RouterLink to="/board" class="nav-link">게시판</RouterLink>
           </li>
           <li>
-            <button @click="logout">로그아웃</button>
+            <button class="nav-bnt" @click="logout">로그아웃</button>
           </li>
         </ul>
       </div>
@@ -54,19 +54,19 @@ const logout = () => {
 </script>
 
 <style scoped>
-@font-face {
+/* @font-face {
   font-family: 'main';
   src: url("./assets/fonts/Jalnan2TTF.ttf");
-}
+} */
 @font-face {
-  font-family: 'maingothic';
+  font-family: 'main';
   src: url("./assets/fonts/JalnanGothicTTF.ttf");
 }
 
 .background {
   height: 100vh; /* 전체 화면 높이 */
   background: linear-gradient(90deg, rgba(0, 0, 0, 1) 30%, rgba(0, 46, 24, 1) 50%, rgba(0, 0, 0, 1) 70%);
-  background-size: 300% 300%; /* 애니메이션을 위한 배경 크기 조정 */
+  background-size: 200% 200%; /* 애니메이션을 위한 배경 크기 조정 */
   animation: gradientAnimation 50s ease infinite; /* 애니메이션 적용 */
 }
 
@@ -90,7 +90,7 @@ const logout = () => {
   justify-content: space-between;
   align-items: center;
   background-color: rgba(0, 0, 0, 0); /* 배경 색상 */
-  padding: 33px 7%; /* 패딩 */
+  padding: 33px 10%; /* 패딩 */
   font-family: 'main';
 }
 
@@ -101,6 +101,7 @@ const logout = () => {
 }
 
 .nav-links {
+  width: 104%;
   list-style: none;
   display: flex;
   justify-content: center; /* 중앙 정렬 */
@@ -119,6 +120,20 @@ const logout = () => {
 }
 
 .nav-link:hover {
+  text-decoration: underline; /* 호버 시 밑줄 추가 */
+}
+
+.nav-bnt {
+  padding: 0;
+  text-decoration: none;
+  color: white; /* 링크 색상 */
+  font-size: 16px; /* 링크 글자 크기 */
+  background: rgba(0, 0, 0, 0);
+  border: rgba(0, 0, 0, 0);
+  font-family: 'main';
+}
+
+.nav-bnt:hover {
   text-decoration: underline; /* 호버 시 밑줄 추가 */
 }
 

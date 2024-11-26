@@ -1,6 +1,5 @@
 <template>
   <div class="reference-container">
-    <h2>참고 자료</h2>
     <div v-for="item in items" :key="item.id" class="reference-card" @click="goToUrl(item.url)">
       <img v-if="item.image" :src="item.image" alt="사이트 아이콘" class="reference-icon" />
       <h3 class="reference-title">{{ item.title }}</h3>
@@ -69,12 +68,15 @@ watch(() => [props.news_sources, props.recruit_sources], () => {
   margin: 20px;
 }
 .reference-card {
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 15px;
-  margin-bottom: 10px;
-  cursor: pointer; /* 커서를 포인터로 변경 */
-  transition: background-color 0.3s, transform 0.2s; /* 배경색과 크기 변화 효과 */
+  background-color: white;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  box-shadow: -3px -2px 1px rgba(0, 0, 0, 0.2), 0px -2px 0px rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0); /* 투명 테두리 */
 }
 .reference-card:hover {
   background-color: #e0f7fa; /* 마우스 오버 시 배경색 변경 */
@@ -91,13 +93,13 @@ watch(() => [props.news_sources, props.recruit_sources], () => {
   flex-direction: column; /* 세로 정렬 */
 }
 .reference-title {
-  font-size: 1.5em;
+  font-size: medium;
   margin: 0;
-  color: #00796b; /* 제목 색상 */
+  color: white; /* 제목 색상 */
 }
 .reference-content {
   margin: 5px 0 0;
-  color: #555; /* 내용 색상 */
+  color: lightgray; /* 내용 색상 */
   font-size: 0.9em; /* 내용 글자 크기 조정 */
 }
 </style>

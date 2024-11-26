@@ -8,7 +8,9 @@
       </div>
       <div class="form-group">
         <label for="content">내용</label>
-        <textarea v-model="content" id="content" required class="form-textarea"></textarea>
+        <div>
+          <textarea v-model="content" id="content" required class="form-input"></textarea>
+        </div>
       </div>
       <div class="form-group">
         <label>회사 선택</label>
@@ -74,25 +76,25 @@
 </template>
 
 <script>
-import axios from 'axios'; // axios 임포트
+import axios from 'axios';
 import { useUserStore } from '@/stores/user';
 import { useRouter } from 'vue-router';
 
-const API_URL = 'http://127.0.0.1:8000/api/v1/board/'; // API URL
+const API_URL = 'http://127.0.0.1:8000/api/v1/board/';
 
 export default {
   setup() {
     const store = useUserStore();
-    const token = store.token; // Token을 setup에서 가져옵니다
+    const token = store.token;
     const router = useRouter();
-    return { token }; // token을 반환하여 메서드에서 사용 가능하게 합니다
+    return { token, router };
   },
   data() {
     return {
       title: '',
       content: '',
-      companies: ['삼성', 'LG', '네이버'], // 기본 회사 목록
-      domains: ['IT', '개발자', 'AI', 'Backend', 'Frontend'], // 기본 도메인 목록
+      companies: ['삼성', 'LG', '네이버'],
+      domains: ['IT', '개발자', 'AI', 'Backend', 'Frontend'],
       newCompany: '',
       newDomain: '',
       filteredCompanies: [],
@@ -116,26 +118,26 @@ export default {
       if (!this.selectedCompanies.includes(company)) {
         this.selectedCompanies.push(company);
       }
-      this.newCompany = ''; // 입력 필드 초기화
-      this.filteredCompanies = []; // 드롭다운 초기화
+      this.newCompany = '';
+      this.filteredCompanies = [];
     },
     selectDomain(domain) {
       if (!this.selectedDomains.includes(domain)) {
         this.selectedDomains.push(domain);
       }
-      this.newDomain = ''; // 입력 필드 초기화
-      this.filteredDomains = []; // 드롭다운 초기화
+      this.newDomain = '';
+      this.filteredDomains = [];
     },
     addCompany() {
       if (this.newCompany && !this.selectedCompanies.includes(this.newCompany)) {
         this.selectedCompanies.push(this.newCompany);
-        this.newCompany = ''; // 입력 필드 초기화
+        this.newCompany = '';
       }
     },
     addDomain() {
       if (this.newDomain && !this.selectedDomains.includes(this.newDomain)) {
         this.selectedDomains.push(this.newDomain);
-        this.newDomain = ''; // 입력 필드 초기화
+        this.newDomain = '';
       }
     },
     removeCompany(company) {
@@ -145,7 +147,6 @@ export default {
       this.selectedDomains = this.selectedDomains.filter(d => d !== domain);
     },
     async submitPost() {
-      console.log(this.token)
       try {
         const response = await axios.post(API_URL, {
           title: this.title,
@@ -154,12 +155,11 @@ export default {
           domains: this.selectedDomains,
         }, {
           headers: {
-            Authorization: `Token ${this.token}`, // 현재 토큰을 헤더에 추가
+            Authorization: `Token ${this.token}`,
           }
         });
-        console.log("글이 성공적으로 작성되었습니다:", response.data);
         alert("글이 성공적으로 작성되었습니다!");
-        this.router.push('/board'); // /board로 라우팅
+        this.router.push('/board');
       } catch (error) {
         console.error("글 작성 중 오류 발생:", error);
       }
@@ -170,26 +170,39 @@ export default {
 
 <style scoped>
 .create-post-container {
-  padding: 20px;
-  border-radius: 8px;
-  background-color: #ffffff; /* 배경색 */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
-  max-width: 600px;
-  margin: auto;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0px 7px 7px rgba(0, 0, 0, 0.1),
+              1px 2px 5px rgba(255, 255, 255, 0.3);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0);
+  margin: 20px 6px 20px 20px;
+  font-family: 'main';
 }
 
 h1 {
-  color: #333;
+  color: white;
   text-align: center;
 }
 
 .form-group {
+  padding: 29px;
   margin-bottom: 15px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0px 7px 7px rgba(0, 0, 0, 0.1),
+              1px 2px 5px rgba(255, 255, 255, 0.3);
+  color: black;
+  border: 1px solid rgba(255, 255, 255, 0);
+  margin: 20px;
+  font-family: 'main';
 }
 
 .form-input {
   width: 100%;
-  padding: 10px;
+  padding: 10px 0;
   border: 1px solid #ddd;
   border-radius: 5px;
   font-size: 16px;
@@ -216,7 +229,7 @@ h1 {
 }
 
 .dropdown li:hover {
-  background-color: #e2e8f0; /* hover 색상 */
+  background-color: #e2e8f0;
 }
 
 .selected-items {
@@ -242,31 +255,42 @@ h1 {
 }
 
 .add-button {
+  height: 32px;
   margin-top: 5px;
-  padding: 5px 10px;
-  background-color: #28a745;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0px 7px 7px rgba(0, 0, 0, 0.1),
+              1px 2px 5px rgba(255, 255, 255, 0.3);
+  color: black;
+  border: 1px solid rgba(255, 255, 255, 0);
+  font-family: 'main';
 }
 
 .add-button:hover {
-  background-color: #218838; /* hover 색상 */
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.1),
+              0px 2px 2px rgba(255, 255, 255, 0.3);
 }
 
 .submit-button {
-  padding: 10px 15px;
-  background-color: #4f46e5; /* 제출 버튼 색상 */
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-top: 20px;
-  transition: background-color 0.3s;
+  width: 68px;
+  height: 37px;
+  margin: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0px 7px 7px rgba(0, 0, 0, 0.1),
+              1px 2px 5px rgba(255, 255, 255, 0.3);
+  color: black;
+  border: 1px solid rgba(255, 255, 255, 0);
+  margin: 20px 6px 20px 20px;
+  font-family: 'main';
 }
 
 .submit-button:hover {
-  background-color: #4338ca; /* 마우스 오버 색상 */
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.1),
+              0px 2px 2px rgba(255, 255, 255, 0.3);
 }
 </style>
