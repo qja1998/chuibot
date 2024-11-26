@@ -21,11 +21,32 @@
         </button>
       </div>
     </div>
+    <div class="button-container">
+      <div class="button-group">
+        <button 
+          v-for="(word, index) in posWords" 
+          :key="index" 
+          class="emotion-button positive" 
+          @click="sendMessage(word)">
+          {{ word }}
+        </button>
+      </div>
+      <div class="button-group">
+        <button 
+          v-for="(word, index) in nagWords" 
+          :key="index" 
+          class="emotion-button negative" 
+          @click="sendMessage(word)">
+          {{ word }}
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
+import { watch } from 'vue';
 import { defineEmits } from 'vue';
 import { useUserStore } from '@/stores/user';
 
@@ -83,6 +104,18 @@ const getTextColor = (frequency) => {
 const sendMessage = (platform) => {
   emit('send-message', platform);
 };
+
+
+const props = defineProps(['pos_emotion', 'nag_emotion']);
+const posWords = ref([]);
+const nagWords = ref([]);
+
+// pos_emotion과 nag_emotion이 변경될 때마다 버튼 업데이트
+watch([() => props.pos_emotion, () => props.nag_emotion], ([newPosEmotion, newNagEmotion]) => {
+  posWords.value = newPosEmotion;
+  nagWords.value = newNagEmotion;
+}, { immediate: true });
+
 </script>
 
 <style scoped>
@@ -109,6 +142,7 @@ const sendMessage = (platform) => {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3), 1px 2px 7px rgba(255, 255, 255, 0.3);
   color: white;
   border: 1px solid rgba(255, 255, 255, 0);
+  overflow-y: auto;
 }
 
 .profile-image {
@@ -150,9 +184,65 @@ const sendMessage = (platform) => {
   box-shadow: 1px 4px 3px rgba(0, 0, 0, 0.2), 1px 1px 2px rgba(255, 255, 255, 0.2);
   color: white;
   border: 1px solid rgba(255, 255, 255, 0);
+  font-family: 'main';
 }
 
 .interest-button:hover {
   filter: brightness(0.9); /* 호버 시 밝기 감소 */
+}
+
+.button-container {
+  margin-top: 13vh;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3), 1px 2px 7px rgba(255, 255, 255, 0.3);
+  width: 100%;
+  height: 25vh;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0); /* 투명 테두리 */
+  font-family: 'main';
+  overflow-y: auto;
+  font-family: 'main';
+}
+
+.positive {
+  background-color: lightblue; /* 긍정적 버튼 색상 */
+  color: black;
+
+  margin: 5px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+  backdrop-filter: blur(10px);
+  box-shadow: 1px 4px 3px rgba(0, 0, 0, 0.2), 1px 1px 2px rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0);
+  font-family: 'main';
+}
+
+.negative {
+  background-color: lightcoral; /* 부정적 버튼 색상 */
+  color: black;
+
+  margin: 5px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+  backdrop-filter: blur(10px);
+  box-shadow: 1px 4px 3px rgba(0, 0, 0, 0.2), 1px 1px 2px rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0);
+  font-family: 'main';
+}
+
+.emotion-button:hover {
+  filter: brightness(0.9); /* 호버 효과 */
 }
 </style>
