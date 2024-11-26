@@ -114,17 +114,26 @@ class CommentView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, board_pk):
-        board = BoardContent.objects.get(pk=board_pk)
+        try:
+            board = BoardContent.objects.get(pk=board_pk)
+        except BoardContent.DoesNotExist:
+            return Response({'error': 'Board not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        # 데이터 복사 및 필드 설정
         data = request.data.copy()
-        data['board_content'] = board.pk
-        data['writer'] = request.user.pk
+        data['board_content'] = board.pk  # 게시글 객체로 설정
+        data['writer'] = request.user.pk    # 작성자 객체로 설정
+        print('data:', data)
 
         serializer = CommentSerializer(data=data)
+        print(serializer.is_valid())
         if serializer.is_valid():
-            serializer.save()
+            print(serializer.validated_data)  # 유효한 데이터 출력
+            serializer.save()  # 데이터 저장
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
     def get(self, request, board_pk):
         board = BoardContent.objects.get(pk=board_pk)

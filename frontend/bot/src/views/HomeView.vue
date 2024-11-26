@@ -41,18 +41,21 @@ const handleSendMessage = (message) => {
 .chat-layout {
   display: flex; /* Flexbox 레이아웃 사용 */
   justify-content: space-between; /* 두 컴포넌트 사이에 공간을 균등하게 배치 */
-  height: 80%; /* 전체 높이 설정 */
-  margin-top: 5%;
+  height: 75%; /* 전체 높이 설정 */
+  margin-top: 4% 8%;
 }
 
 
 .chat-component {
-  width: 45%;
-  height: 80%;
-  margin: 0 auto;
-  padding: 20px;
-  border: 1px solid #ccc; /* 테두리 추가 */
-  border-radius: 10px; /* 경계 부드럽게 */
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1),
+              0 0 10px rgba(255, 255, 255, 0.3); /* 굴절 효과 */
+  width: 30%;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0); /* 투명 테두리 */
+  margin-bottom: 40%; /* 카드가 위로 올라가도록 조정 */
 }
 
 .side {

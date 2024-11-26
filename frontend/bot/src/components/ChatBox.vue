@@ -160,6 +160,7 @@ function updateMessageStatus(status) {
 <style scoped>
 .wrapper {
   max-width: 100%;
+  max-height: 110%;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -169,14 +170,45 @@ function updateMessageStatus(status) {
 .heading,
 .user-message--content,
 .footer {
-  background-color: #0098e0;
+  width: 100%;
+  padding: 10px 0px 10px 0px;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  outline: none;
+  transition: background 0.3s;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0); /* 투명 테두리 */
+  font-family: 'main';
 }
 
-.heading,
-.footer,
-.messages {
-  padding: 1rem;
+.input-field {
+  width: 100%;
+  padding: 10px 0px 10px 6px;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  outline: none;
+  transition: background 0.3s;
+
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 4px rgba(255, 255, 255, 0.5),
+            -4px -2px 6px rgba(0,0,0, 0.3); /* 굴절 효과 */
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0); /* 투명 테두리 */
+  font-family: 'main';
 }
+
+.input-field::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.input-field:focus {
+  background: rgba(255, 255, 255, 0.3);
+}
+
 
 .bot-message--wrapper,
 .user-message--wrapper {
@@ -194,17 +226,27 @@ function updateMessageStatus(status) {
 .bot-message--content,
 .message-loading,
 .user-message--content {
-  border-radius: 1rem;
-  margin-bottom: 1rem;
-  max-width: 70%;
-  padding: 1rem;
-  white-space: break-spaces;
-  width: fit-content;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0px 7px 7px rgba(0, 0, 0, 0.1),
+              1px 2px 5px rgba(255, 255, 255, 0.3);
+  width: 85%;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0); /* 투명 테두리 */
+  margin: 20px 6px 20px 20px;
 }
 
 .bot-message--content {
-  background-color: #323232;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1),
+              0 0 10px rgba(255, 255, 255, 0.3); /* 굴절 효과 */
+  width: 85%;
   color: white;
+  border: 1px solid rgba(255, 255, 255, 0); /* 투명 테두리 */
+  margin: 20px 20px 20px 6px;
 }
 
 .bot-message--content,
@@ -225,36 +267,27 @@ function updateMessageStatus(status) {
 }
 
 /* footer */
+
 .footer {
-  display: flex;
-  align-items: center;
-  padding: 0.5rem;
-  border-radius: 1rem;
-  background-color: #0098e0;
-  margin-top: auto;
-  height: 4%;
+  display: flex; /* Flexbox로 설정 */
+  align-items: center; /* 수직 중앙 정렬 */
+  margin-top: 10px; /* 입력창과 버튼 사이의 간격 */
 }
 
-.footer .input-field {
-  flex: 1;
-  border-radius: 1rem;
-  padding: 1rem;
-  border: none;
-  height: auto;
-}
-
-.footer .button {
-  padding: 0.5rem 1rem;
-  border-radius: 1rem;
-  border: none;
-  background-color: #007acc;
+.button {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  backdrop-filter: blur(10px);
+  margin: 0px 0px 0px 7px;
+  padding: 10px;
+  box-shadow: 1px 2px 3px rgba(255, 255, 255, 0.3), -4px -2px 6px rgba(0,0,0, 0.3);
+  width: 24%;
   color: white;
-  cursor: pointer;
-  transition: background-color 0.3s;
-  margin-left: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0); /* 투명 테두리 */
+  font-family: 'main';
 }
 
-.footer .button:hover {
-  background-color: #005f99;
+.button:hover {
+  background: rgba(0, 46, 24, 0.1);
 }
 </style>

@@ -57,8 +57,19 @@ class BoardSerializer(serializers.ModelSerializer):
 #         fields = '__all__'
 
 class CommentSerializer(serializers.ModelSerializer):
-    writer = UserSerializer(read_only=True)
-
+    
+    writer = UserSerializer(read_only=True) 
+    
     class Meta:
         model = Comment
-        fields = ('id', 'content', 'writer', 'created_at')
+        fields = ['id', 'board_content', 'writer', 'content', 'created_at', 'updated_at']
+        read_only_fields = ['created_at', 'updated_at']  # 작성 시간, 수정 시간은 읽기 전용
+
+    def create(self, validated_data):
+        # writer와 board_content 설정
+        writer = validated_data.pop('writer', None)  # 사용자 정보를 가져옵니다.
+        board_content = validated_data.pop('board_content', None)  # 게시글 정보를 가져옵니다.
+        
+        # 새로운 댓글 객체를 생성합니다.
+        comment = Comment.objects.create(writer=writer, board_content=board_content, **validated_data)
+        return comment

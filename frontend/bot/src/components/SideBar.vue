@@ -90,6 +90,11 @@ const sendMessage = (platform) => {
   border-radius: 8px;
   background-color: #ffffff;
   font-family: 'maingothic';
+  backdrop-filter: blur(11px);
+  -webkit-backdrop-filter: blur(11px);
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
+  border: 1px solid rgba(209, 213, 219, 0.3);
 }
 
 .profile {

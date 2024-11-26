@@ -75,3 +75,72 @@ const signUp = function () {
 <style scoped>
 
 </style>
+
+
+<style scoped>
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0);
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1),
+              0 0 10px rgba(255, 255, 255, 0.3); /* 굴절 효과 */
+  width: 300px;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0); /* 투명 테두리 */
+  margin-bottom: 40%; /* 카드가 위로 올라가도록 조정 */
+}
+
+.input-group {
+  margin: 15px 0;
+  text-align: left;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.input-field {
+  width: 100%;
+  padding: 10px 0px 10px 0px;
+  border: none;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  outline: none;
+  transition: background 0.3s;
+}
+
+.input-field::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.input-field:focus {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.btn {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1),
+              0 0 10px rgba(255, 255, 255, 0.3); /* 굴절 효과 */
+  width: 300px;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0); /* 투명 테두리 */
+}
+
+.btn:hover {
+  background: rgba(0, 46, 24, 0.2);
+}
+</style>
