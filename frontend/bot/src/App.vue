@@ -60,7 +60,7 @@ const logout = () => {
 } */
 @font-face {
   font-family: 'main';
-  src: url("./assets/fonts/JalnanGothicTTF.ttf");
+  src: url("./assets/fonts/The Jamsil 4 Medium.ttf.ttf");
 }
 
 .background {

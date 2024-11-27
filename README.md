@@ -8,7 +8,7 @@
   - 다음 명령어들을 순서대로 실행해 서버를 실행합니다.
   - root는 home 디렉토리입니다.
   ```sh
-  service posetgresql start
+  service postgresql start
   poetry shell
   cd app/backend
   python3 manage.py makemigrations

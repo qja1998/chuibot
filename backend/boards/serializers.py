@@ -66,6 +66,7 @@ class CommentSerializer(serializers.ModelSerializer):
         read_only_fields = ['created_at', 'updated_at']  # 작성 시간, 수정 시간은 읽기 전용
 
     def create(self, validated_data):
+        print('val:', validated_data)
         # writer와 board_content 설정
         writer = validated_data.pop('writer', None)  # 사용자 정보를 가져옵니다.
         board_content = validated_data.pop('board_content', None)  # 게시글 정보를 가져옵니다.
