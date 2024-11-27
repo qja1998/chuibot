@@ -47,6 +47,8 @@ const userStore = useUserStore();
 const token = userStore.token;
 const news_sources = ref([]);
 const recruit_sources = ref([]);
+const pos_emotion = ref([])
+const nag_emotion = ref([])
 
 const props = defineProps(['messages']);
 const messages = ref([]); // 로컬 상태
@@ -59,6 +61,8 @@ const updateSources = () => {
   emit('update-sources', {
     news_sources: news_sources.value,
     recruit_sources: recruit_sources.value,
+    pos_emotion: pos_emotion.value,
+    nag_emotion: nag_emotion.value,
   });
 };
 
@@ -121,6 +125,8 @@ async function submitMessage(message) {
     if (data) {
       news_sources.value = data.source.news_src;
       recruit_sources.value = data.source.recruit_src;
+      pos_emotion.value = data.emotion.pos;
+      nag_emotion.value = data.emotion.nag;
       await addToMessageArray('chatGpt', data.answer);
       updateMessageStatus('success');
       await userStore.fetchUserInfo()

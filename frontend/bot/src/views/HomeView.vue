@@ -6,11 +6,15 @@ import SideBoard from '@/components/SideBoard.vue';
 
 const news_sources = ref([]);
 const recruit_sources = ref([]);
+const pos_emotion = ref([]);
+const nag_emotion = ref([]);
 
 // 부모 컴포넌트가 update-sources 이벤트를 처리
 const updateSources = (sources) => {
   news_sources.value = sources.news_sources;
   recruit_sources.value = sources.recruit_sources;
+  pos_emotion.value = sources.pos_emotion;
+  nag_emotion.value = sources.nag_emotion;
   console.log('home:', news_sources.value)
 };
 
@@ -27,7 +31,7 @@ const handleSendMessage = (message) => {
   <div class="home-wrapper">
     <div class="chat-layout">
       <nav class="side">
-        <SideBar @send-message="handleSendMessage"/>
+        <SideBar @send-message="handleSendMessage" :pos_emotion="pos_emotion" :nag_emotion="nag_emotion"/>
       </nav>
       <div class="chat-component">
         <ChatBox @update-sources="updateSources" :messages="name"/>

@@ -121,6 +121,36 @@ def get_company_recruit(search_keyword):
     
     return "\n".join(qna_texts), sources
 
+def emotion(docs: str) -> str:
+    """Extract company name from user input."""
+
+    llm = ChatOpenAI(
+        model_name="gpt-4o-mini",
+        temperature=0.1,
+        streaming=True,
+    )
+
+
+    system_prompt = """
+    기업에 대한 문서가 주어집니다.
+    이 문서에서 키워드(명사)를 모두 추출하여 긍정적인 단어와 부정적인 단어를 출력합니다.
+    ** 무조건 아래의 형태를 지켜 출력하세요. **
+    output: 긍정적단어1, 긍정적단어2, 긍정적단어3 / 부정적단어1, 부정적단어2, 부정적단어3
+    """
+
+    messages = [
+        SystemMessage(content=system_prompt),
+        HumanMessage(content=f"Input: {docs}")
+    ]
+    
+    try:
+        response = llm.invoke(messages)
+        print(response.content)
+        return response.content.strip()
+    except Exception as e:
+        print(f"Error during company name extraction: {str(e)}")
+        return "Error extracting company name."
+
 def generate_answer(hope:str, query: str, relevant_docs: list, llm, stream_handler):
     """Generate answer using GPT model based on documents and user query."""
     
@@ -182,7 +212,13 @@ def generate_answer(hope:str, query: str, relevant_docs: list, llm, stream_handl
     )
     sources = list(set(sources))
     recruit_sources = list(set(recruit_sources))
-    return response.content, {'news_src': sources, 'recruit_src': recruit_sources}, company_names, keywords
+
+    emotion_result = emotion(context).split(':')[1]
+    emotion_result = {'pos':emotion_result.split('/')[0].strip().split(', '),
+                      'nag':emotion_result.split('/')[1].strip().split(', ')}
+    print('emotion', emotion_result)
+
+    return response.content, {'news_src': sources, 'recruit_src': recruit_sources}, company_names, keywords, emotion_result
     
     # except Exception as e:
     #     print(f"Error generating answer: {str(e)}")

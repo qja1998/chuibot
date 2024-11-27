@@ -25,13 +25,13 @@ def generate_answer_and_source(hope, question):
 
     results = rag.search_documents(doc_store, question)
     stream_handler = rag.StreamHandler()
-    answer, source, company_names, jobrole_names = rag.generate_answer(hope, question, results, llm, stream_handler)
+    answer, source, company_names, jobrole_names, emotion = rag.generate_answer(hope, question, results, llm, stream_handler)
     chat_history.append({"role": "assistant", "content": answer})
 
     print('answer:', answer)
     print('source:', source)
     
-    return answer, source, company_names, jobrole_names
+    return answer, source, company_names, jobrole_names, emotion
 
 
 class ChatbotView(APIView):
@@ -59,7 +59,7 @@ class ChatbotView(APIView):
         사용자 관심 -기업: {company_names}, -직무: {job_role_names}
         """
         
-        answer, source, company_names, jobrole_names = generate_answer_and_source(hope, question)
+        answer, source, company_names, jobrole_names, emotion = generate_answer_and_source(hope, question)
         
         # 인스턴스를 가져오거나 생성 및 빈도 업데이트
         for company_name, jobrole_name in zip(company_names, jobrole_names):
@@ -92,7 +92,10 @@ class ChatbotView(APIView):
         interest_serializer = UserInterestSerializer(user_interest)
         serializer = ChatLogSerializer(chat_log)
 
-        return Response({'answer': answer, 'source': source, 'log': serializer.data, 'interest': interest_serializer.data})
+        print(interest_serializer.data)
+        print(emotion)
+
+        return Response({'answer': answer, 'source': source, 'log': serializer.data, 'interest': interest_serializer.data, 'emotion': emotion})
 
     
 
